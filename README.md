@@ -2,9 +2,9 @@
 
 ## Overview
 
-TODO
+This Azure function is used as part of the file upload process to receive anti virus scan events from the AV scanner.
 
-## How To Run 
+## How To Run
  
 ### Prerequisites 
 In order to run the service you will need the following dependencies 
