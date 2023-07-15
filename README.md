@@ -1,4 +1,4 @@
-# EPR Submission Event Dispatcher
+# EPR Anti Virus Function App Service
 
 ## Overview
 
