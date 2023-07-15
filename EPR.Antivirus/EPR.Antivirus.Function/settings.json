@@ -1,0 +1,34 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=false",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "FUNCTIONS_WORKER_RUNTIME_VERSION": "7.2",
+    "ServiceBus": {
+      "ConnectionString": "",
+      "PomUploadQueueName": "",
+      "RegistrationDataQueueName": "",
+      "BaseUrl": ""
+    },
+    "BlobStorage": {
+      "ConnectionString": "",
+      "PomContainerName": "",
+      "RegistrationContainerName": ""
+    },
+    "TradeAntivirusApi": {
+      "BaseUrl": "",
+      "Scope": "",
+      "ClientId": "",
+      "ClientSecret": "",
+      "SubscriptionKey": "",
+      "TenantId": "",
+      "Timeout": 300,
+      "EnableDirectAccess": false
+    },
+    "TradeAntivirusServiceBus": {
+      "ConnectionString": "",
+      "AntivirusTopicName": "",
+      "SubscriptionName": ""
+    }
+  }
+}

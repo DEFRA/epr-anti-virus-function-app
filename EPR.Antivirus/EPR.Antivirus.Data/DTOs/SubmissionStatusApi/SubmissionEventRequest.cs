@@ -1,0 +1,8 @@
+﻿namespace EPR.Antivirus.Data.DTOs.SubmissionStatusApi;
+
+using System.Diagnostics.CodeAnalysis;
+using Enums;
+
+[ExcludeFromCodeCoverage]
+public record SubmissionEventRequest(
+    Guid FileId, ScanResult AntivirusScanResult, string BlobName, EventType Type = EventType.AntivirusResult, List<string> Errors = null);
