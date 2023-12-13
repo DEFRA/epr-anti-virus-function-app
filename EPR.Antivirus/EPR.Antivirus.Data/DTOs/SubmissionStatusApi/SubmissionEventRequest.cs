@@ -5,4 +5,9 @@ using Enums;
 
 [ExcludeFromCodeCoverage]
 public record SubmissionEventRequest(
-    Guid FileId, ScanResult AntivirusScanResult, string BlobName, EventType Type = EventType.AntivirusResult, List<string> Errors = null);
+    Guid FileId,
+    string BlobContainerName,
+    ScanResult AntivirusScanResult,
+    string BlobName,
+    EventType Type = EventType.AntivirusResult,
+    List<string> Errors = null);

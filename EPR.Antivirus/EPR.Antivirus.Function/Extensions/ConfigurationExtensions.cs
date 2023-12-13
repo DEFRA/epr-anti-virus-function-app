@@ -40,6 +40,8 @@ public static class ConfigurationExtensions
 
     public static void AddHttpClients(this IServiceCollection services)
     {
+        var sp = services.BuildServiceProvider();
+
         services.AddHttpClient<ISubmissionStatusApiClient, SubmissionStatusApiClient>((sp, c) =>
         {
             var submissionStatusApiOptions = sp.GetRequiredService<IOptions<SubmissionStatusApiOptions>>().Value;
@@ -47,7 +49,7 @@ public static class ConfigurationExtensions
             c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
-        var tradeAntivirusOptions = services.BuildServiceProvider().GetRequiredService<IOptions<TradeAntivirusApiOptions>>().Value;
+        var tradeAntivirusOptions = sp.GetRequiredService<IOptions<TradeAntivirusApiOptions>>().Value;
 
         if (tradeAntivirusOptions.EnableDirectAccess)
         {

@@ -5,16 +5,10 @@ using System.Text.Json.Serialization;
 using Enums;
 
 [ExcludeFromCodeCoverage]
-public class ServiceBusQueueMessage
-{
-    public string BlobName { get; set; }
-
-    public Guid SubmissionId { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public SubmissionSubType? SubmissionSubType { get; set; }
-
-    public Guid OrganisationId { get; set; }
-
-    public Guid UserId { get; set; }
-}
+public record ServiceBusQueueMessage(
+    string BlobName,
+    Guid SubmissionId,
+    [property: JsonConverter(typeof(JsonStringEnumConverter))] SubmissionSubType? SubmissionSubType,
+    Guid OrganisationId,
+    Guid UserId,
+    string SubmissionPeriod);

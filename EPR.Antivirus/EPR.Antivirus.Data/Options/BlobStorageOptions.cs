@@ -9,11 +9,11 @@ public class BlobStorageOptions
     public const string Section = "BlobStorage";
 
     [Required]
-    public string ConnectionString { get; init; }
+    public string ConnectionString { get; set; }
 
     [Required]
-    public string PomContainerName { get; init; }
+    public string PomContainerName { get; set; }
 
     [Required]
-    public string RegistrationContainerName { get; init; }
+    public string RegistrationContainerName { get; set; }
 }

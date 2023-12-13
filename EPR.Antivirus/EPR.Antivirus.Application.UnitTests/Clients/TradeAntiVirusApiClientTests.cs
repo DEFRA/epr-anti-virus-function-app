@@ -1,4 +1,4 @@
-﻿namespace EPR.Antivirus.Application.Tests.Clients;
+﻿namespace EPR.Antivirus.Application.UnitTests.Clients;
 
 using System.Net;
 using Application.Clients;
@@ -77,7 +77,7 @@ public class TradeAntivirusApiClientTests
             .ThrowsAsync(new HttpRequestException())
             .Verifiable();
 
-        // Act / Assert
+        // Act & Assert
         await _systemUnderTest
             .Invoking(x => x.GetFileAsync(collection, key))
             .Should()

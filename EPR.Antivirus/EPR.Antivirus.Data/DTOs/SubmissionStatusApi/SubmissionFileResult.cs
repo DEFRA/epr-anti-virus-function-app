@@ -5,4 +5,11 @@ using Enums;
 
 [ExcludeFromCodeCoverage]
 public record SubmissionFileResult(
-    Guid SubmissionId, SubmissionType SubmissionType, Guid FileId, FileType FileType, Guid OrganisationId, Guid UserId);
+    Guid SubmissionId,
+    SubmissionType SubmissionType,
+    Guid FileId,
+    string FileName,
+    FileType FileType,
+    Guid OrganisationId,
+    Guid UserId,
+    string SubmissionPeriod);

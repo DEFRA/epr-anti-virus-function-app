@@ -3,19 +3,25 @@
 using System.Net.Http.Json;
 using Data.DTOs.SubmissionStatusApi;
 using Data.Enums;
+using Data.Options;
 using Exceptions;
 using Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 public class SubmissionStatusApiClient : ISubmissionStatusApiClient
 {
     private readonly HttpClient _httpClient;
+    private readonly BlobStorageOptions _options;
     private readonly ILogger<SubmissionStatusApiClient> _logger;
 
     public SubmissionStatusApiClient(
-        HttpClient httpClient, ILogger<SubmissionStatusApiClient> logger)
+        HttpClient httpClient,
+        IOptions<BlobStorageOptions> options,
+        ILogger<SubmissionStatusApiClient> logger)
     {
         _httpClient = httpClient;
+        _options = options.Value;
         _logger = logger;
     }
 
@@ -38,16 +44,21 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
         }
     }
 
-    public async Task PostEventAsync(Guid organisationId, Guid userId, Guid submissionId, string blobName, Guid fileId, ScanResult scanResult, List<string> errors)
+    public async Task PostEventAsync(SubmissionClientPostEventRequest request)
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Add(nameof(organisationId), organisationId.ToString());
-            _httpClient.DefaultRequestHeaders.Add(nameof(userId), userId.ToString());
+            _httpClient.DefaultRequestHeaders.Add("organisationId", request.OrganisationId.ToString());
+            _httpClient.DefaultRequestHeaders.Add("userId", request.UserId.ToString());
 
             var response = await _httpClient.PostAsJsonAsync(
-                $"submissions/{submissionId}/events",
-                new SubmissionEventRequest(fileId, scanResult, blobName, Errors: errors));
+                $"submissions/{request.SubmissionId}/events",
+                new SubmissionEventRequest(
+                    request.FileId,
+                    request.FileType == FileType.Pom ? _options.PomContainerName : _options.RegistrationContainerName,
+                    request.ScanResult,
+                    request.BlobName,
+                    Errors: request.Errors));
             response.EnsureSuccessStatusCode();
             _logger.LogInformation("Event posted to Submission Status Api");
         }

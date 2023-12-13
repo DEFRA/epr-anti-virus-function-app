@@ -4,5 +4,5 @@ public enum SubmissionSubType
 {
     CompanyDetails,
     Brands,
-    Partnerships,
+    Partnerships
 }

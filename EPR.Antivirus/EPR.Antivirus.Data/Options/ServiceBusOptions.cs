@@ -9,11 +9,11 @@ public class ServiceBusOptions
     public const string Section = "ServiceBus";
 
     [Required]
-    public string ConnectionString { get; init; }
+    public string ConnectionString { get; set; }
 
     [Required]
-    public string PomUploadQueueName { get; init; }
+    public string PomUploadQueueName { get; set; }
 
     [Required]
-    public string RegistrationDataQueueName { get; init; }
+    public string RegistrationDataQueueName { get; set; }
 }

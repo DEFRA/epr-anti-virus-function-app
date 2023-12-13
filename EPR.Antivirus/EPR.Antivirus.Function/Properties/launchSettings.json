@@ -1,9 +1,8 @@
 {
   "profiles": {
-    "EPR.Antivirus.Functions": {
+    "EPR.Antivirus.Function": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7011",
-      "launchBrowser": false
+      "commandLineArgs": "--port 7011"
     }
   }
 }

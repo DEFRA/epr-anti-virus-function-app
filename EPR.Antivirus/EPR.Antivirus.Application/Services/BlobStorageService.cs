@@ -21,7 +21,7 @@ public class BlobStorageService : IBlobStorageService
         _logger = logger;
     }
 
-    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType)
+    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod)
     {
         return new Dictionary<string, string>
         {
@@ -37,6 +37,9 @@ public class BlobStorageService : IBlobStorageService
             {
                 "fileType", "text/csv"
             },
+            {
+                "submissionPeriod", submissionPeriod
+            }
         };
     }
 
@@ -59,8 +62,8 @@ public class BlobStorageService : IBlobStorageService
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Error occured during uploading to blob storage");
-            throw new BlobStorageServiceException("Error occured during uploading to blob storage", exception);
+            _logger.LogError(exception, "Error occurred during uploading to blob storage");
+            throw new BlobStorageServiceException("Error occurred during uploading to blob storage", exception);
         }
     }
 

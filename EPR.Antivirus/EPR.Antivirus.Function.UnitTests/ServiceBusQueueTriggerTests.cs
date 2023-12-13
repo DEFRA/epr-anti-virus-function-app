@@ -1,4 +1,4 @@
-﻿namespace EPR.Antivirus.Function.Tests;
+﻿namespace EPR.Antivirus.Function.UnitTests;
 
 using System;
 using System.Text.Json;

@@ -2,5 +2,5 @@
 
 public enum EventType
 {
-    AntivirusResult = 5,
+    AntivirusResult = 5
 }

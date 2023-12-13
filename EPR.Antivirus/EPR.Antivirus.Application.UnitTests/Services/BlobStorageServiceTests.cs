@@ -1,4 +1,4 @@
-﻿namespace EPR.Antivirus.Application.Tests.Services;
+﻿namespace EPR.Antivirus.Application.UnitTests.Services;
 
 using Application.Services;
 using Application.Services.Interfaces;
@@ -64,9 +64,10 @@ public class BlobStorageServiceTests
         var userId = Guid.NewGuid();
         const FileType fileType = FileType.Brands;
         const string csvFileMimeType = "text/csv";
+        var submissionPeriod = It.IsAny<string>();
 
         // Act
-        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType);
+        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod);
 
         // Assert
         result.Should().Contain("fileTypeEPR", fileType.ToString());
@@ -105,11 +106,11 @@ public class BlobStorageServiceTests
 
         _blobClientMock.Setup(x => x.Name).Throws<Exception>();
 
-        // Act / Assert
+        // Act & Assert
         await _systemUnderTest
             .Invoking(x => x.UploadFileStreamWithMetadataAsync(stream, submissionType, metadata))
             .Should()
             .ThrowAsync<BlobStorageServiceException>()
-            .WithMessage("Error occured during uploading to blob storage");
+            .WithMessage("Error occurred during uploading to blob storage");
     }
 }

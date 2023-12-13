@@ -1,4 +1,4 @@
-﻿namespace EPR.Antivirus.Application.Tests.Clients;
+﻿namespace EPR.Antivirus.Application.UnitTests.Clients;
 
 using Application.Clients;
 using Application.Clients.Interfaces;
@@ -50,16 +50,9 @@ public class ServiceBusQueueClientTests
     {
         // Arrange
         var blobName = Guid.NewGuid().ToString();
-        var message = new ServiceBusQueueMessage
-        {
-            BlobName = blobName,
-            SubmissionId = Guid.NewGuid(),
-            SubmissionSubType = submissionSubType,
-            OrganisationId = Guid.NewGuid(),
-            UserId = Guid.NewGuid()
-        };
+        var message = new ServiceBusQueueMessage(blobName, Guid.NewGuid(), submissionSubType, Guid.NewGuid(), Guid.NewGuid(), It.IsAny<string>());
 
-        // Act / Assert
+        // Act & Assert
         await _systemUnderTest
             .Invoking(x => x.SendMessageAsync(submissionType, message))
             .Should()
@@ -75,20 +68,13 @@ public class ServiceBusQueueClientTests
     {
         // Arrange
         var blobName = Guid.NewGuid().ToString();
-        var message = new ServiceBusQueueMessage
-        {
-            BlobName = blobName,
-            SubmissionId = Guid.NewGuid(),
-            SubmissionSubType = submissionSubType,
-            OrganisationId = Guid.NewGuid(),
-            UserId = Guid.NewGuid()
-        };
+        var message = new ServiceBusQueueMessage(blobName, Guid.NewGuid(), submissionSubType, Guid.NewGuid(), Guid.NewGuid(), It.IsAny<string>());
 
         _serviceBusSenderMock
             .Setup(x => x.SendMessageAsync(It.IsAny<ServiceBusMessage>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception());
 
-        // Act / Assert
+        // Act & Assert
         await _systemUnderTest
             .Invoking(x => x.SendMessageAsync(submissionType, message))
             .Should()

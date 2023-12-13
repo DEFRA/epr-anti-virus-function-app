@@ -21,7 +21,10 @@ public class ServiceBusQueueTrigger
 
     [FunctionName("ServiceBusQueueTrigger")]
     public async Task RunAsync(
-        [ServiceBusTrigger("%TradeAntivirusServiceBus:AntivirusTopicName%", "%TradeAntivirusServiceBus:SubscriptionName%", Connection = "TradeAntivirusServiceBus:ConnectionString")]
+        [ServiceBusTrigger(
+            "%TradeAntivirusServiceBus:AntivirusTopicName%",
+            "%TradeAntivirusServiceBus:SubscriptionName%",
+            Connection = "TradeAntivirusServiceBus:ConnectionString")]
         string message)
     {
         _logger.LogEnter();

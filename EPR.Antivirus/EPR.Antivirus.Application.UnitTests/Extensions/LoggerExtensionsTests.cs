@@ -1,4 +1,4 @@
-﻿namespace EPR.Antivirus.Application.Tests.Extensions;
+﻿namespace EPR.Antivirus.Application.UnitTests.Extensions;
 
 using Application.Extensions;
 using Microsoft.Extensions.Logging;

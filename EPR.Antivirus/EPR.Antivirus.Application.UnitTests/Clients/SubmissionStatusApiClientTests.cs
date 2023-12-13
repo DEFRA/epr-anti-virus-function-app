@@ -1,4 +1,4 @@
-﻿namespace EPR.Antivirus.Application.Tests.Clients;
+﻿namespace EPR.Antivirus.Application.UnitTests.Clients;
 
 using System.Net;
 using System.Text.Json;
@@ -6,9 +6,11 @@ using Application.Clients;
 using Application.Clients.Interfaces;
 using Data.DTOs.SubmissionStatusApi;
 using Data.Enums;
+using Data.Options;
 using Exceptions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.Protected;
@@ -16,6 +18,10 @@ using Moq.Protected;
 [TestClass]
 public class SubmissionStatusApiClientTests
 {
+    private const string PomContainerName = "pom-blob-container-name";
+    private const string RegistrationContainerName = "registration-blob-container-name";
+    private readonly Mock<IOptions<BlobStorageOptions>> _blobStorageOptionsMock = new();
+
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
     private HttpClient _httpClient;
 
@@ -29,12 +35,24 @@ public class SubmissionStatusApiClientTests
         {
             BaseAddress = new Uri("https://baseaddress.com/"),
         };
+        _blobStorageOptionsMock.Setup(x => x.Value).Returns(new BlobStorageOptions
+        {
+            PomContainerName = PomContainerName,
+            RegistrationContainerName = RegistrationContainerName,
+        });
 
-        _systemUnderTest = new SubmissionStatusApiClient(_httpClient, Mock.Of<ILogger<SubmissionStatusApiClient>>());
+        _systemUnderTest = new SubmissionStatusApiClient(
+            _httpClient,
+            _blobStorageOptionsMock.Object,
+            Mock.Of<ILogger<SubmissionStatusApiClient>>());
     }
 
     [TestMethod]
-    public async Task PostEventAsync_WhenValidRequest_NoErrorThrown()
+    [DataRow(FileType.Pom, ScanResult.Success)]
+    [DataRow(FileType.Brands, ScanResult.Success)]
+    [DataRow(FileType.CompanyDetails, ScanResult.FailedToVirusScan)]
+    [DataRow(FileType.Partnerships, ScanResult.Success)]
+    public async Task PostEventAsync_WhenValidRequest_NoErrorThrown(FileType fileType, ScanResult scanResult)
     {
         // Arrange
         var orgId = Guid.NewGuid();
@@ -42,7 +60,6 @@ public class SubmissionStatusApiClientTests
         var submissionId = Guid.NewGuid();
         var fileId = Guid.NewGuid();
         var blobName = Guid.NewGuid().ToString();
-        const ScanResult scanResult = ScanResult.Success;
         var errors = new List<string> { "99" };
 
         _httpMessageHandlerMock
@@ -56,11 +73,21 @@ public class SubmissionStatusApiClientTests
                 StatusCode = HttpStatusCode.Created,
             });
 
-        // Act / Assert
+        // Act & Assert
         await _systemUnderTest
-            .Invoking(x => x.PostEventAsync(orgId, userId, submissionId, blobName, fileId, scanResult, errors))
+            .Invoking(x => x.PostEventAsync(
+                new SubmissionClientPostEventRequest(orgId, userId, submissionId, fileType, blobName, fileId, scanResult, errors)))
             .Should()
             .NotThrowAsync();
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Verify(
+            "SendAsync",
+            Times.Once(),
+            ItExpr.Is<HttpRequestMessage>(
+                req => IsValidReport(req.Content, fileType, scanResult)),
+            ItExpr.IsAny<CancellationToken>());
     }
 
     [TestMethod]
@@ -72,6 +99,7 @@ public class SubmissionStatusApiClientTests
         var submissionId = Guid.NewGuid();
         var fileId = Guid.NewGuid();
         var blobName = Guid.NewGuid().ToString();
+        const FileType fileType = FileType.Pom;
         const ScanResult scanResult = ScanResult.Success;
         var errors = new List<string> { "99" };
 
@@ -83,9 +111,10 @@ public class SubmissionStatusApiClientTests
                 ItExpr.IsAny<CancellationToken>())
             .ThrowsAsync(new HttpRequestException());
 
-        // Act / Assert
+        // Act & Assert
         await _systemUnderTest
-            .Invoking(x => x.PostEventAsync(orgId, userId, submissionId, blobName, fileId, scanResult, errors))
+            .Invoking(x => x.PostEventAsync(
+                new SubmissionClientPostEventRequest(orgId, userId, submissionId, fileType, blobName, fileId, scanResult, errors)))
             .Should()
             .ThrowAsync<SubmissionStatusApiClientException>()
             .WithMessage("A success status code was not received when sending the error report");
@@ -97,7 +126,8 @@ public class SubmissionStatusApiClientTests
         // Arrange
         var fileId = Guid.NewGuid();
 
-        var submissionFileResult = new SubmissionFileResult(Guid.NewGuid(), SubmissionType.Producer, Guid.NewGuid(), FileType.Pom, Guid.NewGuid(), Guid.NewGuid());
+        var submissionFileResult = new SubmissionFileResult(
+            Guid.NewGuid(), SubmissionType.Producer, Guid.NewGuid(), "SomeFileName", FileType.Pom, Guid.NewGuid(), Guid.NewGuid(), It.IsAny<string>());
         var submissionFileResultJson = JsonSerializer.Serialize(submissionFileResult);
 
         _httpMessageHandlerMock
@@ -133,11 +163,32 @@ public class SubmissionStatusApiClientTests
                 ItExpr.IsAny<CancellationToken>())
             .ThrowsAsync(new HttpRequestException());
 
-        // Act / Assert
+        // Act & Assert
         await _systemUnderTest
             .Invoking(x => x.GetSubmissionFileAsync(fileId))
             .Should()
             .ThrowAsync<SubmissionStatusApiClientException>()
             .WithMessage("A success status code was not received when requesting file metadata");
+    }
+
+    private static bool IsValidReport(HttpContent? content, FileType fileType, ScanResult scanResult)
+    {
+        if (content is null)
+        {
+            return false;
+        }
+
+        var stringContent = content.ReadAsStringAsync().Result;
+        var report = JsonSerializer.Deserialize<SubmissionEventRequest>(
+            stringContent,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        if (report is null)
+        {
+            return false;
+        }
+
+        return report.AntivirusScanResult == scanResult
+               && report.BlobContainerName == (fileType == FileType.Pom ? PomContainerName : RegistrationContainerName);
     }
 }

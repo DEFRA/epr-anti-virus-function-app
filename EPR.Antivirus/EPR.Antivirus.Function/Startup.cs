@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using EPR.Antivirus.Function;
 using EPR.Antivirus.Function.Extensions;
+using EPR.Common.Logging.Extensions;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ public class Startup : FunctionsStartup
         var services = builder.Services;
         services.ConfigureOptions();
         services.AddLogging();
+        services.ConfigureLogging();
         services.AddApplicationInsightsTelemetry();
         services.AddAzureClients();
         services.AddHttpClients();
