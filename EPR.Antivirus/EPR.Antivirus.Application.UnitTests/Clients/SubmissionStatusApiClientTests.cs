@@ -127,7 +127,15 @@ public class SubmissionStatusApiClientTests
         var fileId = Guid.NewGuid();
 
         var submissionFileResult = new SubmissionFileResult(
-            Guid.NewGuid(), SubmissionType.Producer, Guid.NewGuid(), "SomeFileName", FileType.Pom, Guid.NewGuid(), Guid.NewGuid(), It.IsAny<string>());
+            Guid.NewGuid(),
+            SubmissionType.Producer,
+            Guid.NewGuid(),
+            "SomeFileName",
+            FileType.Pom,
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            It.IsAny<string>(),
+            It.IsAny<Guid>());
         var submissionFileResultJson = JsonSerializer.Serialize(submissionFileResult);
 
         _httpMessageHandlerMock

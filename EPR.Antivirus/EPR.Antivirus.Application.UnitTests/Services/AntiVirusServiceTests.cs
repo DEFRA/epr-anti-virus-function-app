@@ -68,7 +68,8 @@ public class AntivirusServiceTests
             FileType.Pom,
             Guid.NewGuid(),
             Guid.NewGuid(),
-            It.IsAny<string>());
+            It.IsAny<string>(),
+            It.IsAny<Guid>());
 
         _blobStorageServiceMock
             .Setup(x => x.UploadFileStreamWithMetadataAsync(
@@ -130,7 +131,8 @@ public class AntivirusServiceTests
             FileType.Pom,
             Guid.NewGuid(),
             Guid.NewGuid(),
-            It.IsAny<string>());
+            It.IsAny<string>(),
+            It.IsAny<Guid>());
 
         _submissionStatusApiClientMock.Setup(x => x.GetSubmissionFileAsync(It.IsAny<Guid>()))
             .ReturnsAsync(submissionFile);
@@ -184,7 +186,8 @@ public class AntivirusServiceTests
                 FileType.Pom,
                 Guid.NewGuid(),
                 Guid.NewGuid(),
-                It.IsAny<string>()));
+                It.IsAny<string>(),
+                It.IsAny<Guid>()));
 
         _loggingServiceMock.Setup(x => x.SendEventAsync(
                 It.IsAny<Guid>(), It.IsAny<ProtectiveMonitoringEvent>()))

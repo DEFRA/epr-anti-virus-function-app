@@ -12,4 +12,5 @@ public record ProcessFileAsyncRequest(
    FileType FileType,
    Guid OrganisationId,
    Guid UserId,
-   string Collection);
+   string Collection,
+   Guid? ComplianceSchemeId);

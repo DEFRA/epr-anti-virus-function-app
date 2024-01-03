@@ -50,7 +50,14 @@ public class ServiceBusQueueClientTests
     {
         // Arrange
         var blobName = Guid.NewGuid().ToString();
-        var message = new ServiceBusQueueMessage(blobName, Guid.NewGuid(), submissionSubType, Guid.NewGuid(), Guid.NewGuid(), It.IsAny<string>());
+        var message = new ServiceBusQueueMessage(
+            blobName,
+            Guid.NewGuid(),
+            submissionSubType,
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            It.IsAny<string>(),
+            It.IsAny<Guid>());
 
         // Act & Assert
         await _systemUnderTest
@@ -68,7 +75,14 @@ public class ServiceBusQueueClientTests
     {
         // Arrange
         var blobName = Guid.NewGuid().ToString();
-        var message = new ServiceBusQueueMessage(blobName, Guid.NewGuid(), submissionSubType, Guid.NewGuid(), Guid.NewGuid(), It.IsAny<string>());
+        var message = new ServiceBusQueueMessage(
+            blobName,
+            Guid.NewGuid(),
+            submissionSubType,
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            It.IsAny<string>(),
+            It.IsAny<Guid>());
 
         _serviceBusSenderMock
             .Setup(x => x.SendMessageAsync(It.IsAny<ServiceBusMessage>(), It.IsAny<CancellationToken>()))

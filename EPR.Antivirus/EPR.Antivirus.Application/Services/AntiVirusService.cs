@@ -66,7 +66,8 @@ public class AntivirusService : IAntivirusService
                 submissionFile.FileType,
                 submissionFile.OrganisationId,
                 submissionFile.UserId,
-                message.Collection));
+                message.Collection,
+                submissionFile.ComplianceSchemeId));
         }
         else
         {
@@ -102,7 +103,8 @@ public class AntivirusService : IAntivirusService
             submissionSubType,
             processFileAsyncRequest.OrganisationId,
             processFileAsyncRequest.UserId,
-            processFileAsyncRequest.SubmissionPeriod);
+            processFileAsyncRequest.SubmissionPeriod,
+            processFileAsyncRequest.ComplianceSchemeId);
 
         await _serviceBusQueueClient.SendMessageAsync(processFileAsyncRequest.SubmissionType, serviceBusQueueMessage);
 

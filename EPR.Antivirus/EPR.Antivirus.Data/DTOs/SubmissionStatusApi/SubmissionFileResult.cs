@@ -12,4 +12,5 @@ public record SubmissionFileResult(
     FileType FileType,
     Guid OrganisationId,
     Guid UserId,
-    string SubmissionPeriod);
+    string SubmissionPeriod,
+    Guid? ComplianceSchemeId);

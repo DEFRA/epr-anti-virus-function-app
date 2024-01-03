@@ -11,4 +11,5 @@ public record ServiceBusQueueMessage(
     [property: JsonConverter(typeof(JsonStringEnumConverter))] SubmissionSubType? SubmissionSubType,
     Guid OrganisationId,
     Guid UserId,
-    string SubmissionPeriod);
+    string SubmissionPeriod,
+    Guid? ComplianceSchemeId);
