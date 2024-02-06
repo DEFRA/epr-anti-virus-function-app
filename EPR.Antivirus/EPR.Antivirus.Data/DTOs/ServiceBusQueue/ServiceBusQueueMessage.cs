@@ -12,4 +12,5 @@ public record ServiceBusQueueMessage(
     Guid OrganisationId,
     Guid UserId,
     string SubmissionPeriod,
-    Guid? ComplianceSchemeId);
+    Guid? ComplianceSchemeId,
+    bool? RequiresRowValidation);

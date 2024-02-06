@@ -9,5 +9,6 @@ public record SubmissionEventRequest(
     string BlobContainerName,
     ScanResult AntivirusScanResult,
     string BlobName,
+    bool? RequiresRowValidation,
     EventType Type = EventType.AntivirusResult,
     List<string> Errors = null);

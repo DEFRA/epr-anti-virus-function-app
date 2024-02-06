@@ -4,6 +4,7 @@ using EPR.Antivirus.Function.Extensions;
 using EPR.Common.Logging.Extensions;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.FeatureManagement;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 
@@ -22,5 +23,6 @@ public class Startup : FunctionsStartup
         services.AddAzureClients();
         services.AddHttpClients();
         services.AddServices();
+        services.AddFeatureManagement();
     }
 }

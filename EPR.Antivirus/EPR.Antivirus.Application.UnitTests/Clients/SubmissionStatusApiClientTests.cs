@@ -76,7 +76,7 @@ public class SubmissionStatusApiClientTests
         // Act & Assert
         await _systemUnderTest
             .Invoking(x => x.PostEventAsync(
-                new SubmissionClientPostEventRequest(orgId, userId, submissionId, fileType, blobName, fileId, scanResult, errors)))
+                new SubmissionClientPostEventRequest(orgId, userId, submissionId, fileType, blobName, fileId, scanResult, errors, false)))
             .Should()
             .NotThrowAsync();
 
@@ -114,7 +114,7 @@ public class SubmissionStatusApiClientTests
         // Act & Assert
         await _systemUnderTest
             .Invoking(x => x.PostEventAsync(
-                new SubmissionClientPostEventRequest(orgId, userId, submissionId, fileType, blobName, fileId, scanResult, errors)))
+                new SubmissionClientPostEventRequest(orgId, userId, submissionId, fileType, blobName, fileId, scanResult, errors, false)))
             .Should()
             .ThrowAsync<SubmissionStatusApiClientException>()
             .WithMessage("A success status code was not received when sending the error report");

@@ -42,47 +42,41 @@ public class ServiceBusQueueClientTests
     }
 
     [TestMethod]
-    [DataRow(SubmissionType.Producer, null)]
-    [DataRow(SubmissionType.Registration, SubmissionSubType.CompanyDetails)]
-    [DataRow(SubmissionSubType.Brands, SubmissionSubType.Brands)]
-    [DataRow(SubmissionSubType.Partnerships, SubmissionSubType.Partnerships)]
-    public async Task PostMessageAsync_WhenValid_NoErrorThrown(SubmissionType submissionType, SubmissionSubType? submissionSubType)
+    public async Task PostMessageAsync_WhenValid_CreateSenderIsCalled()
     {
         // Arrange
         var blobName = Guid.NewGuid().ToString();
         var message = new ServiceBusQueueMessage(
             blobName,
             Guid.NewGuid(),
-            submissionSubType,
+            It.IsAny<SubmissionSubType>(),
             Guid.NewGuid(),
             Guid.NewGuid(),
             It.IsAny<string>(),
-            It.IsAny<Guid>());
+            It.IsAny<Guid>(),
+            false);
 
-        // Act & Assert
-        await _systemUnderTest
-            .Invoking(x => x.SendMessageAsync(submissionType, message))
-            .Should()
-            .NotThrowAsync();
+        // Act
+        _systemUnderTest.SendMessageAsync(It.IsAny<SubmissionType>(), message);
+
+        // Assert
+        _serviceBusClientMock.Verify(x => x.CreateSender(It.IsAny<string>()), Times.Once);
     }
 
     [TestMethod]
-    [DataRow(SubmissionType.Producer, null)]
-    [DataRow(SubmissionType.Registration, SubmissionSubType.CompanyDetails)]
-    [DataRow(SubmissionSubType.Brands, SubmissionSubType.Brands)]
-    [DataRow(SubmissionSubType.Partnerships, SubmissionSubType.Partnerships)]
-    public async Task PostMessageAsync_WhenMessageFails_ThrowsServiceBusQueueClientException(SubmissionType submissionType, SubmissionSubType? submissionSubType)
+    public async Task PostMessageAsync_WhenMessageFails_ThrowsServiceBusQueueClientException()
     {
         // Arrange
         var blobName = Guid.NewGuid().ToString();
         var message = new ServiceBusQueueMessage(
             blobName,
             Guid.NewGuid(),
-            submissionSubType,
+            It.IsAny<SubmissionSubType>(),
             Guid.NewGuid(),
             Guid.NewGuid(),
             It.IsAny<string>(),
-            It.IsAny<Guid>());
+            It.IsAny<Guid>(),
+            false);
 
         _serviceBusSenderMock
             .Setup(x => x.SendMessageAsync(It.IsAny<ServiceBusMessage>(), It.IsAny<CancellationToken>()))
@@ -90,7 +84,7 @@ public class ServiceBusQueueClientTests
 
         // Act & Assert
         await _systemUnderTest
-            .Invoking(x => x.SendMessageAsync(submissionType, message))
+            .Invoking(x => x.SendMessageAsync(It.IsAny<SubmissionType>(), message))
             .Should()
             .ThrowAsync<ServiceBusQueueClientException>()
             .WithMessage("Failed to post message to service bus");

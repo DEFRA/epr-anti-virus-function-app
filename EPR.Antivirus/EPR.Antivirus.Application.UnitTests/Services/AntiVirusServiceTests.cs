@@ -12,6 +12,7 @@ using Data.DTOs.TradeAntivirusQueue;
 using Data.Enums;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -24,6 +25,7 @@ public class AntivirusServiceTests
     private Mock<ITradeAntivirusApiClient> _tradeAntivirusFileResultMock;
     private Mock<ILogger<AntivirusService>> _loggerMock;
     private Mock<ILoggingService> _loggingServiceMock;
+    private Mock<IFeatureManager> _featureManagerMock;
 
     private IAntivirusService _systemUnderTest;
 
@@ -36,6 +38,7 @@ public class AntivirusServiceTests
         _tradeAntivirusFileResultMock = new Mock<ITradeAntivirusApiClient>();
         _loggerMock = new Mock<ILogger<AntivirusService>>();
         _loggingServiceMock = new Mock<ILoggingService>();
+        _featureManagerMock = new Mock<IFeatureManager>();
 
         _systemUnderTest = new AntivirusService(
             _submissionStatusApiClientMock.Object,
@@ -43,7 +46,8 @@ public class AntivirusServiceTests
             _blobStorageServiceMock.Object,
             _loggingServiceMock.Object,
             _tradeAntivirusFileResultMock.Object,
-            _loggerMock.Object);
+            _loggerMock.Object,
+            _featureManagerMock.Object);
     }
 
     [TestMethod]
@@ -200,5 +204,77 @@ public class AntivirusServiceTests
         // Assert
         await act.Should().NotThrowAsync();
         _loggerMock.VerifyLog(x => x.LogError("An error occurred creating the protective monitoring event"), Times.Once);
+    }
+
+    [TestMethod]
+    [DataRow(SubmissionType.Producer, FileType.Pom, true, null)]
+    [DataRow(SubmissionType.Producer, FileType.Pom, false, null)]
+    [DataRow(SubmissionType.Registration, FileType.CompanyDetails, true, true)]
+    [DataRow(SubmissionType.Registration, FileType.CompanyDetails, false, false)]
+    [DataRow(SubmissionType.Registration, FileType.Brands, true, true)]
+    [DataRow(SubmissionType.Registration, FileType.Brands, false, false)]
+    [DataRow(SubmissionType.Registration, FileType.Partnerships, true, true)]
+    [DataRow(SubmissionType.Registration, FileType.Partnerships, false, false)]
+    public async Task HandleAsync_CorrectlySetsRequiresRowValidation_ForValidFileTypeAndFeatureFlag(SubmissionType submissionType, FileType fileType, bool featureFlag, bool? requiresRowValidation)
+    {
+        // Arrange
+        var blobName = Guid.NewGuid().ToString();
+
+        var message = new TradeAntivirusQueueResult
+        {
+            Key = Guid.NewGuid(),
+            Collection = "CompanyDetails",
+            Status = ScanResult.Success
+        };
+
+        var submissionFile = new SubmissionFileResult(
+            Guid.NewGuid(),
+            submissionType,
+            Guid.NewGuid(),
+            "SomeRegistrationFileName",
+            fileType,
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            It.IsAny<string>(),
+            It.IsAny<Guid>());
+
+        _featureManagerMock.Setup(x => x.IsEnabledAsync(nameof(FeatureFlags.EnableRegistrationRowValidation)))
+            .ReturnsAsync(featureFlag);
+
+        _blobStorageServiceMock
+            .Setup(x => x.UploadFileStreamWithMetadataAsync(
+                It.IsAny<Stream>(), It.IsAny<SubmissionType>(), It.IsAny<IDictionary<string, string>>()))
+            .ReturnsAsync(blobName);
+
+        _submissionStatusApiClientMock.Setup(x => x.GetSubmissionFileAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(submissionFile);
+
+        var monitoringEvent = new ProtectiveMonitoringEvent(
+            submissionFile.SubmissionId,
+            "epr-anti-virus-function-app",
+            PmcCodes.Code0203,
+            Priorities.NormalEvent,
+            TransactionCodes.AntivirusCleanUpload,
+            $"Antivirus check was successful for file '{submissionFile.FileName}'",
+            $"FileId: '{submissionFile.FileId}'");
+
+        // Act
+        await _systemUnderTest.HandleAsync(message);
+
+        // Assert
+        _loggingServiceMock.Verify(x => x.SendEventAsync(submissionFile.UserId, monitoringEvent), Times.Once);
+        _submissionStatusApiClientMock.Verify(
+            x => x.PostEventAsync(
+                It.Is<SubmissionClientPostEventRequest>(t =>
+                    t.OrganisationId == submissionFile.OrganisationId &&
+                    t.UserId == submissionFile.UserId &&
+                    t.SubmissionId == submissionFile.SubmissionId &&
+                    t.FileType == submissionFile.FileType &&
+                    t.BlobName == blobName &&
+                    t.FileId == submissionFile.FileId &&
+                    t.ScanResult == message.Status &&
+                    t.Errors.Count == 0 &&
+                    t.RequiresRowValidation == requiresRowValidation)),
+            Times.Once());
     }
 }

@@ -13,6 +13,7 @@ using Data.Enums;
 using Extensions;
 using Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 
 public class AntivirusService : IAntivirusService
 {
@@ -22,6 +23,7 @@ public class AntivirusService : IAntivirusService
     private readonly ILoggingService _loggingService;
     private readonly ITradeAntivirusApiClient _tradeAntivirusApiClient;
     private readonly ILogger<AntivirusService> _logger;
+    private readonly IFeatureManager _featureManager;
 
     public AntivirusService(
         ISubmissionStatusApiClient submissionStatusApiClient,
@@ -29,7 +31,8 @@ public class AntivirusService : IAntivirusService
         IBlobStorageService blobStorageService,
         ILoggingService loggingService,
         ITradeAntivirusApiClient tradeAntivirusApiClient,
-        ILogger<AntivirusService> logger)
+        ILogger<AntivirusService> logger,
+        IFeatureManager featureManager)
     {
         _submissionStatusApiClient = submissionStatusApiClient;
         _serviceBusQueueClient = serviceBusQueueClient;
@@ -37,6 +40,7 @@ public class AntivirusService : IAntivirusService
         _loggingService = loggingService;
         _tradeAntivirusApiClient = tradeAntivirusApiClient;
         _logger = logger;
+        _featureManager = featureManager;
     }
 
     public async Task HandleAsync(TradeAntivirusQueueResult message)
@@ -46,6 +50,12 @@ public class AntivirusService : IAntivirusService
         SubmissionFileResult? submissionFile = await _submissionStatusApiClient.GetSubmissionFileAsync(fileId);
         var blobName = string.Empty;
         var errors = new List<string>();
+
+        bool? requiresRowValidation = null;
+        if (submissionFile.FileType != FileType.Pom)
+        {
+            requiresRowValidation = await _featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableRegistrationRowValidation));
+        }
 
         try
         {
@@ -67,7 +77,8 @@ public class AntivirusService : IAntivirusService
                 submissionFile.OrganisationId,
                 submissionFile.UserId,
                 message.Collection,
-                submissionFile.ComplianceSchemeId));
+                submissionFile.ComplianceSchemeId,
+                requiresRowValidation));
         }
         else
         {
@@ -83,7 +94,8 @@ public class AntivirusService : IAntivirusService
                 blobName,
                 submissionFile.FileId,
                 message.Status,
-                errors));
+                errors,
+                requiresRowValidation));
     }
 
     private async Task<string> ProcessFileAsync(ProcessFileAsyncRequest processFileAsyncRequest)
@@ -104,7 +116,8 @@ public class AntivirusService : IAntivirusService
             processFileAsyncRequest.OrganisationId,
             processFileAsyncRequest.UserId,
             processFileAsyncRequest.SubmissionPeriod,
-            processFileAsyncRequest.ComplianceSchemeId);
+            processFileAsyncRequest.ComplianceSchemeId,
+            processFileAsyncRequest.RequiresRowValidation);
 
         await _serviceBusQueueClient.SendMessageAsync(processFileAsyncRequest.SubmissionType, serviceBusQueueMessage);
 

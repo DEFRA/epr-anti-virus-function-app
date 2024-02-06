@@ -12,4 +12,5 @@ public record SubmissionClientPostEventRequest(
     string BlobName,
     Guid FileId,
     ScanResult ScanResult,
-    List<string> Errors);
+    List<string> Errors,
+    bool? RequiresRowValidation);

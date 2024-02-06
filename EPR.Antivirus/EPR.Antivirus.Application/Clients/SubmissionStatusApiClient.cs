@@ -58,7 +58,8 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
                     request.FileType == FileType.Pom ? _options.PomContainerName : _options.RegistrationContainerName,
                     request.ScanResult,
                     request.BlobName,
-                    Errors: request.Errors));
+                    Errors: request.Errors,
+                    RequiresRowValidation: request.RequiresRowValidation));
             response.EnsureSuccessStatusCode();
             _logger.LogInformation("Event posted to Submission Status Api");
         }
