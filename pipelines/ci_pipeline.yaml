@@ -11,6 +11,10 @@ parameters:
   displayName: Run tests
   type: boolean
   default: true
+- name: runOWASPScan
+  displayName: Run tests
+  type: boolean
+  default: false
 - name: sonarqubeInstance
   displayName: 'Select SonarQube for v9.9 or SonarQubeLatest for 10.4'
   type: string
@@ -39,8 +43,9 @@ variables:
 resources:
   repositories:
     - repository: CommonTemplates
-      name: RWD-CPR-EPR4P-ADO/epr-webapps-code-deploy-templates
-      type: git
+      name: defra/epr-webapps-code-deploy-templates
+      type: github
+      endpoint: defra
       ref: main
 
 extends:
@@ -52,6 +57,7 @@ extends:
     sonarQubeProjectKey: ${{ variables.sonarQubeProjectKey }}
     sonarQubeProjectName: ${{ variables.sonarQubeProjectName }}
     runTests: ${{ parameters.runTests }}
+    runOWASPScan: ${{ parameters.runOWASPScan }}
     azureSubscription: $(azureSubscription)
     acrAzureContainerRegistryName: $(acr.azureContainerRegistryName)
     acrRepositoryName: $(acr.repositoryName)
