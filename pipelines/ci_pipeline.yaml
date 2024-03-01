@@ -12,7 +12,7 @@ parameters:
   type: boolean
   default: true
 - name: runOWASPScan
-  displayName: Run tests
+  displayName: Run OWASP Scan
   type: boolean
   default: false
 - name: sonarqubeInstance
