@@ -5,18 +5,18 @@ pool: DEFRA-COMMON-ubuntu2004-SSV3
 parameters:
 - name: teamName
   displayName: 'Select Team Name:    (works only with "development" as target env)'
-  default: 'Team-1_Pi'
+  default: 'Dev-1'
   type: string
   values:
-    - Team-1_Pi
-    - Team-2_Wastebusters
-    - Team-3_Recyclers
-    - Team-4_QA
-    - Team-5_Phoenix
-    - Team-6_Stig
-    - Team-7_Oscar
-    - Team-8_Pre-TST
-    - Team-9_Ops
+    - Dev-1
+    - Dev-2
+    - Dev-3
+    - Dev-4
+    - Dev-5
+    - Dev-6
+    - Dev-7
+    - Dev-8
+    - Dev-9
 - name: envToDeploy
   displayName: 'Target Environment to deploy:    (select "development" for Team 1-9)'
   default: development
