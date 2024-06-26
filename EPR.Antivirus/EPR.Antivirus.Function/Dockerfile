@@ -1,9 +1,6 @@
 # Use the SDK image to build your application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS installer-env
 
-# Use the Azure Functions image as the final image
-FROM mcr.microsoft.com/azure-functions/dotnet:4-dotnet8
-
 # Copy everything
 COPY EPR.Antivirus.Function/. ./EPR.Antivirus.Function/.
 COPY EPR.Antivirus.Application/. ./EPR.Antivirus.Application/.
@@ -24,7 +21,7 @@ RUN chmod 644 /usr/local/share/ca-certificates/internal-ca.crt && update-ca-cert
 RUN dotnet publish EPR.Antivirus.Function/*.csproj --output /home/site/wwwroot 
 
 # Use the Azure Functions image as the final image
-FROM mcr.microsoft.com/azure-functions/dotnet:4
+FROM mcr.microsoft.com/azure-functions/dotnet:4-dotnet8
 
 # Create a non-root user and set permissions
 RUN groupadd -r dotnet && \
