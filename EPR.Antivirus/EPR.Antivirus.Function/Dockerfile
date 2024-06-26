@@ -1,8 +1,8 @@
 # Use the SDK image to build your application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS installer-env
 
-# Build requires 3.1 SDK
-COPY --from=mcr.microsoft.com/dotnet/core/sdk:3.1 /usr/share/dotnet /usr/share/dotnet
+# Use the Azure Functions image as the final image
+FROM mcr.microsoft.com/azure-functions/dotnet:4-dotnet8
 
 # Copy everything
 COPY EPR.Antivirus.Function/. ./EPR.Antivirus.Function/.
