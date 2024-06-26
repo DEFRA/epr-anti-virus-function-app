@@ -24,7 +24,7 @@ RUN chmod 644 /usr/local/share/ca-certificates/internal-ca.crt && update-ca-cert
 RUN dotnet publish EPR.Antivirus.Function/*.csproj --output /home/site/wwwroot 
 
 # Use the Azure Functions image as the final image
-FROM mcr.microsoft.com/azure-functions/dotnet:4
+FROM mcr.microsoft.com/azure-functions/dotnet:4-dotnet8
 
 # Create a non-root user and set permissions
 RUN groupadd -r dotnet && \
