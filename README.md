@@ -1,5 +1,6 @@
 # EPR Antivirus Function
 
+
 ## Overview
 
 This function listens to an Azure ServiceBus Topic on DEFRA Trade Anti-Virus Solution. If the uploaded file is reported as clean, the file is retrieved and normal processing will continue, otherwise for an infected file, a protective monitoring event with transaction code of `EPR_ANTIVIRUS_THREAT_DETECTED` will be generated.
