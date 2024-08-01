@@ -19,7 +19,7 @@ This function listens to an Azure ServiceBus Topic on DEFRA Trade Anti-Virus Sol
 ### Prerequisites 
 In order to run the service you will need the following dependencies 
  
-- .NET 6
+- .NET 8
 - Azure CLI
 
 #### epr-packaging-common
