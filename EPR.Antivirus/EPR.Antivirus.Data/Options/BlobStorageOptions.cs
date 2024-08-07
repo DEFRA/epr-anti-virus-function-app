@@ -16,4 +16,6 @@ public class BlobStorageOptions
 
     [Required]
     public string RegistrationContainerName { get; set; }
+
+    public string SusidiaryContainerName { get; set; }
 }

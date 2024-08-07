@@ -52,7 +52,7 @@ public class AntivirusService : IAntivirusService
         var errors = new List<string>();
 
         bool? requiresRowValidation = null;
-        if (submissionFile.FileType != FileType.Pom)
+        if (submissionFile.FileType != FileType.Pom && submissionFile.FileType != FileType.Subsidiaries)
         {
             requiresRowValidation = await _featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableRegistrationRowValidation));
         }
@@ -69,16 +69,16 @@ public class AntivirusService : IAntivirusService
         if (checkIsSuccessful)
         {
             blobName = await ProcessFileAsync(
-                new ProcessFileAsyncRequest(submissionFile.SubmissionId,
-                submissionFile.SubmissionType,
-                submissionFile.SubmissionPeriod,
-                submissionFile.FileId,
-                submissionFile.FileType,
-                submissionFile.OrganisationId,
-                submissionFile.UserId,
-                message.Collection,
-                submissionFile.ComplianceSchemeId,
-                requiresRowValidation));
+            new ProcessFileAsyncRequest(submissionFile.SubmissionId,
+            submissionFile.SubmissionType,
+            submissionFile.SubmissionPeriod,
+            submissionFile.FileId,
+            submissionFile.FileType,
+            submissionFile.OrganisationId,
+            submissionFile.UserId,
+            message.Collection,
+            submissionFile.ComplianceSchemeId,
+            requiresRowValidation));
         }
         else
         {
@@ -108,18 +108,26 @@ public class AntivirusService : IAntivirusService
             processFileAsyncRequest.SubmissionPeriod);
         var blobName = await _blobStorageService.UploadFileStreamWithMetadataAsync(
             fileStream, processFileAsyncRequest.SubmissionType, fileMetadata);
-        var submissionSubType = processFileAsyncRequest.FileType.ToSubmissionSubType();
-        var serviceBusQueueMessage = new ServiceBusQueueMessage(
-            blobName,
-            processFileAsyncRequest.SubmissionId,
-            submissionSubType,
-            processFileAsyncRequest.OrganisationId,
-            processFileAsyncRequest.UserId,
-            processFileAsyncRequest.SubmissionPeriod,
-            processFileAsyncRequest.ComplianceSchemeId,
-            processFileAsyncRequest.RequiresRowValidation);
 
-        await _serviceBusQueueClient.SendMessageAsync(processFileAsyncRequest.SubmissionType, serviceBusQueueMessage);
+        if (processFileAsyncRequest.SubmissionType != SubmissionType.Subsidiary)
+        {
+            var submissionSubType = processFileAsyncRequest.FileType.ToSubmissionSubType();
+            var serviceBusQueueMessage = new ServiceBusQueueMessage(
+                blobName,
+                processFileAsyncRequest.SubmissionId,
+                submissionSubType,
+                processFileAsyncRequest.OrganisationId,
+                processFileAsyncRequest.UserId,
+                processFileAsyncRequest.SubmissionPeriod,
+                processFileAsyncRequest.ComplianceSchemeId,
+                processFileAsyncRequest.RequiresRowValidation);
+
+            await _serviceBusQueueClient.SendMessageAsync(processFileAsyncRequest.SubmissionType, serviceBusQueueMessage);
+        }
+        else
+        {
+            Console.WriteLine("TODO:");
+        }
 
         return blobName;
     }

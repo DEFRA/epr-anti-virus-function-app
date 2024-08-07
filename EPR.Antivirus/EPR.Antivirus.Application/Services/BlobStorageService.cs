@@ -67,8 +67,25 @@ public class BlobStorageService : IBlobStorageService
         }
     }
 
-    private string SetContainerName(SubmissionType submissionType) =>
-        submissionType == SubmissionType.Producer
-        ? _options.PomContainerName
-        : _options.RegistrationContainerName;
+    private string SetContainerName(SubmissionType submissionType)
+    {
+        var blobContainerName = string.Empty;
+
+        switch (submissionType)
+        {
+            case SubmissionType.Producer:
+                blobContainerName = _options.PomContainerName;
+                break;
+            case SubmissionType.Registration:
+                blobContainerName = _options.RegistrationContainerName;
+                break;
+            case SubmissionType.Subsidiary:
+                blobContainerName = _options.SusidiaryContainerName;
+                break;
+            default:
+                break;
+        }
+
+        return blobContainerName;
+    }
 }
