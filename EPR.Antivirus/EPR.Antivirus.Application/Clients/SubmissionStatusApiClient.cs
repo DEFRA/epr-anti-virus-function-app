@@ -81,7 +81,7 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
                 blobContainerName = _options.PomContainerName;
                 break;
             case FileType.Subsidiaries:
-                blobContainerName = _options.SusidiaryContainerName;
+                blobContainerName = _options.SubsidiaryContainerName;
                 break;
             default:
                 blobContainerName = _options.RegistrationContainerName;

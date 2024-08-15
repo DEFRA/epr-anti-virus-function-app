@@ -14,4 +14,5 @@ public record ProcessFileAsyncRequest(
    Guid UserId,
    string Collection,
    Guid? ComplianceSchemeId,
-   bool? RequiresRowValidation);
+   bool? RequiresRowValidation,
+   string FileName);

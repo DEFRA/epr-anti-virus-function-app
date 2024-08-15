@@ -78,7 +78,8 @@ public class AntivirusService : IAntivirusService
             submissionFile.UserId,
             message.Collection,
             submissionFile.ComplianceSchemeId,
-            requiresRowValidation));
+            requiresRowValidation,
+            submissionFile.FileName));
         }
         else
         {
@@ -105,7 +106,9 @@ public class AntivirusService : IAntivirusService
             processFileAsyncRequest.SubmissionId,
             processFileAsyncRequest.UserId,
             processFileAsyncRequest.FileType,
-            processFileAsyncRequest.SubmissionPeriod);
+            processFileAsyncRequest.SubmissionPeriod,
+            processFileAsyncRequest.FileName,
+            processFileAsyncRequest.OrganisationId);
         var blobName = await _blobStorageService.UploadFileStreamWithMetadataAsync(
             fileStream, processFileAsyncRequest.SubmissionType, fileMetadata);
 

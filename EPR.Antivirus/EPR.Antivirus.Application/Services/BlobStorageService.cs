@@ -21,8 +21,33 @@ public class BlobStorageService : IBlobStorageService
         _logger = logger;
     }
 
-    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod)
+    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod, string fileName, Guid organisationId)
     {
+        if (fileType == FileType.Subsidiaries)
+        {
+            return new Dictionary<string, string>
+            {
+                {
+                    "fileTypeEPR", fileType.ToString()
+                },
+                {
+                    "submissionId", submissionId.ToString()
+                },
+                {
+                    "userId", userId.ToString()
+                },
+                {
+                    "fileType", "text/csv"
+                },
+                {
+                    "fileName", fileName
+                },
+                {
+                    "organisationId", organisationId.ToString()
+                }
+            };
+        }
+
         return new Dictionary<string, string>
         {
             {
@@ -80,7 +105,7 @@ public class BlobStorageService : IBlobStorageService
                 blobContainerName = _options.RegistrationContainerName;
                 break;
             case SubmissionType.Subsidiary:
-                blobContainerName = _options.SusidiaryContainerName;
+                blobContainerName = _options.SubsidiaryContainerName;
                 break;
             default:
                 break;

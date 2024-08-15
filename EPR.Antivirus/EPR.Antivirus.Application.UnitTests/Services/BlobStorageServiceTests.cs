@@ -50,7 +50,7 @@ public class BlobStorageServiceTests
                 ConnectionString = "ConnectionString",
                 PomContainerName = "PomContainerName",
                 RegistrationContainerName = "RegistrationContainerName",
-                SusidiaryContainerName = "SusidiaryContainerName"
+                SubsidiaryContainerName = "subsidiaryContainerName"
             });
 
         _systemUnderTest = new BlobStorageService(
@@ -66,9 +66,11 @@ public class BlobStorageServiceTests
         const FileType fileType = FileType.Brands;
         const string csvFileMimeType = "text/csv";
         var submissionPeriod = It.IsAny<string>();
+        string fileName = "testfile.csv";
+        var organisationId = Guid.NewGuid();
 
         // Act
-        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod);
+        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod, fileName, organisationId);
 
         // Assert
         result.Should().Contain("fileTypeEPR", fileType.ToString());
