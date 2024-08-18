@@ -3,7 +3,6 @@
 using System.Net;
 using System.Text.Json;
 using Application.Clients;
-using Application.Clients.Interfaces;
 using Data.DTOs.SubmissionStatusApi;
 using Data.Enums;
 using Data.Options;
@@ -25,7 +24,7 @@ public class SubmissionStatusApiClientTests
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
     private HttpClient _httpClient;
 
-    private ISubmissionStatusApiClient _systemUnderTest;
+    private SubmissionStatusApiClient _systemUnderTest;
 
     [TestInitialize]
     public void TestInitialize()
@@ -187,9 +186,9 @@ public class SubmissionStatusApiClientTests
         }
 
         var stringContent = content.ReadAsStringAsync().Result;
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var report = JsonSerializer.Deserialize<SubmissionEventRequest>(
-            stringContent,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            stringContent, options);
 
         if (report is null)
         {

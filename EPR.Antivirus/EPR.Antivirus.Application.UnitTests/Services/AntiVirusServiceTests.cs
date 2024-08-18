@@ -27,7 +27,7 @@ public class AntivirusServiceTests
     private Mock<ILoggingService> _loggingServiceMock;
     private Mock<IFeatureManager> _featureManagerMock;
 
-    private IAntivirusService _systemUnderTest;
+    private AntivirusService _systemUnderTest;
 
     [TestInitialize]
     public void TestInitialize()
