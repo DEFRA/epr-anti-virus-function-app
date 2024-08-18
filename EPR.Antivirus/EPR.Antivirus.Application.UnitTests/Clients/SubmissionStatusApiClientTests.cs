@@ -19,6 +19,7 @@ public class SubmissionStatusApiClientTests
 {
     private const string PomContainerName = "pom-blob-container-name";
     private const string RegistrationContainerName = "registration-blob-container-name";
+    private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
     private readonly Mock<IOptions<BlobStorageOptions>> _blobStorageOptionsMock = new();
 
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
@@ -186,9 +187,8 @@ public class SubmissionStatusApiClientTests
         }
 
         var stringContent = content.ReadAsStringAsync().Result;
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var report = JsonSerializer.Deserialize<SubmissionEventRequest>(
-            stringContent, options);
+            stringContent, Options);
 
         if (report is null)
         {
