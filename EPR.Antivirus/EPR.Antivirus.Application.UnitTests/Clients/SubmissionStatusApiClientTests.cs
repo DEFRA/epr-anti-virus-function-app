@@ -3,7 +3,6 @@
 using System.Net;
 using System.Text.Json;
 using Application.Clients;
-using Application.Clients.Interfaces;
 using Data.DTOs.SubmissionStatusApi;
 using Data.Enums;
 using Data.Options;
@@ -20,12 +19,13 @@ public class SubmissionStatusApiClientTests
 {
     private const string PomContainerName = "pom-blob-container-name";
     private const string RegistrationContainerName = "registration-blob-container-name";
+    private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
     private readonly Mock<IOptions<BlobStorageOptions>> _blobStorageOptionsMock = new();
 
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
     private HttpClient _httpClient;
 
-    private ISubmissionStatusApiClient _systemUnderTest;
+    private SubmissionStatusApiClient _systemUnderTest;
 
     [TestInitialize]
     public void TestInitialize()
@@ -188,8 +188,7 @@ public class SubmissionStatusApiClientTests
 
         var stringContent = content.ReadAsStringAsync().Result;
         var report = JsonSerializer.Deserialize<SubmissionEventRequest>(
-            stringContent,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            stringContent, Options);
 
         if (report is null)
         {

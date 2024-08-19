@@ -5,6 +5,11 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- SonarCloud not aware that a class is to instantiated by DI and therefore it cannot be static. -->
+    <NoWarn>S1118</NoWarn>
+  </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.435">
         <PrivateAssets>all</PrivateAssets>
