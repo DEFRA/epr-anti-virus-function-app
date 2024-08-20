@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace>EPR.Antivirus.Application</RootNamespace>
@@ -11,8 +11,8 @@
       <PackageReference Include="Azure.Storage.Blobs" Version="12.21.1" />
       <PackageReference Include="Azure.Storage.Common" Version="12.20.1" />
       <PackageReference Include="EPR.Common.Logging" Version="1.0.6" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
       <PackageReference Include="Microsoft.FeatureManagement" Version="3.5.0" />
       <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.5.0" />

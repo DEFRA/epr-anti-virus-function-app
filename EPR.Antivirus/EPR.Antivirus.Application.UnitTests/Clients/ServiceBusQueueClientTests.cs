@@ -1,7 +1,6 @@
 ﻿namespace EPR.Antivirus.Application.UnitTests.Clients;
 
 using Application.Clients;
-using Application.Clients.Interfaces;
 using Azure.Messaging.ServiceBus;
 using Data.DTOs.ServiceBusQueue;
 using Data.Enums;
@@ -20,7 +19,7 @@ public class ServiceBusQueueClientTests
     private Mock<ServiceBusClient> _serviceBusClientMock;
     private Mock<IOptions<ServiceBusOptions>> _optionsMock;
 
-    private IServiceBusQueueClient _systemUnderTest;
+    private ServiceBusQueueClient _systemUnderTest;
 
     [TestInitialize]
     public void TestInitialize()

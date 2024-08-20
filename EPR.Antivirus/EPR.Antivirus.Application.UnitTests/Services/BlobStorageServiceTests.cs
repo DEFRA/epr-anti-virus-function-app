@@ -1,7 +1,6 @@
 ﻿namespace EPR.Antivirus.Application.UnitTests.Services;
 
 using Application.Services;
-using Application.Services.Interfaces;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -22,7 +21,7 @@ public class BlobStorageServiceTests
     private Mock<BlobServiceClient> _blobServiceClientMock;
     private Mock<IOptions<BlobStorageOptions>> _optionsMock;
 
-    private IBlobStorageService _systemUnderTest;
+    private BlobStorageService _systemUnderTest;
 
     [TestInitialize]
     public void TestInitialize()
