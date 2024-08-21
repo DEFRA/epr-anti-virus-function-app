@@ -13,6 +13,7 @@ public static class FileTypeExtensions
             FileType.Partnerships => SubmissionSubType.Partnerships,
             FileType.CompanyDetails => SubmissionSubType.CompanyDetails,
             FileType.Pom => null,
+            FileType.Subsidiaries => null,
             _ => throw new InvalidEnumArgumentException(),
         };
     }

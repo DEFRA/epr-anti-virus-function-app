@@ -21,8 +21,33 @@ public class BlobStorageService : IBlobStorageService
         _logger = logger;
     }
 
-    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod)
+    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod, string fileName, Guid organisationId)
     {
+        if (fileType == FileType.Subsidiaries)
+        {
+            return new Dictionary<string, string>
+            {
+                {
+                    "fileTypeEPR", fileType.ToString()
+                },
+                {
+                    "submissionId", submissionId.ToString()
+                },
+                {
+                    "userId", userId.ToString()
+                },
+                {
+                    "fileType", "text/csv"
+                },
+                {
+                    "fileName", fileName
+                },
+                {
+                    "organisationId", organisationId.ToString()
+                }
+            };
+        }
+
         return new Dictionary<string, string>
         {
             {
@@ -67,8 +92,25 @@ public class BlobStorageService : IBlobStorageService
         }
     }
 
-    private string SetContainerName(SubmissionType submissionType) =>
-        submissionType == SubmissionType.Producer
-        ? _options.PomContainerName
-        : _options.RegistrationContainerName;
+    private string SetContainerName(SubmissionType submissionType)
+    {
+        var blobContainerName = string.Empty;
+
+        switch (submissionType)
+        {
+            case SubmissionType.Producer:
+                blobContainerName = _options.PomContainerName;
+                break;
+            case SubmissionType.Registration:
+                blobContainerName = _options.RegistrationContainerName;
+                break;
+            case SubmissionType.Subsidiary:
+                blobContainerName = _options.SubsidiaryContainerName;
+                break;
+            default:
+                break;
+        }
+
+        return blobContainerName;
+    }
 }

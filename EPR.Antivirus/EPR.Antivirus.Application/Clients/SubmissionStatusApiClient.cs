@@ -55,7 +55,7 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
                 $"submissions/{request.SubmissionId}/events",
                 new SubmissionEventRequest(
                     request.FileId,
-                    request.FileType == FileType.Pom ? _options.PomContainerName : _options.RegistrationContainerName,
+                    GetContainerName(request.FileType),
                     request.ScanResult,
                     request.BlobName,
                     Errors: request.Errors,
@@ -69,5 +69,25 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
             throw new SubmissionStatusApiClientException(
                 "A success status code was not received when sending the error report", exception);
         }
+    }
+
+    private string GetContainerName(FileType fileType)
+    {
+        var blobContainerName = string.Empty;
+
+        switch (fileType)
+        {
+            case FileType.Pom:
+                blobContainerName = _options.PomContainerName;
+                break;
+            case FileType.Subsidiaries:
+                blobContainerName = _options.SubsidiaryContainerName;
+                break;
+            default:
+                blobContainerName = _options.RegistrationContainerName;
+                break;
+        }
+
+        return blobContainerName;
     }
 }

@@ -9,7 +9,6 @@ using Application.Handlers;
 using Application.Services;
 using Application.Services.Interfaces;
 using Data.Options;
-using EPR.Antivirus.Data.Config;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -23,7 +22,6 @@ public static class ConfigurationExtensions
         services.ConfigureSection<ServiceBusOptions>(ServiceBusOptions.Section);
         services.ConfigureSection<BlobStorageOptions>(BlobStorageOptions.Section);
         services.ConfigureSection<TradeAntivirusApiOptions>(TradeAntivirusApiOptions.Section);
-        services.ConfigureSection<FeatureManagementConfig>(FeatureManagementConfig.Section);
     }
 
     public static void AddAzureClients(this IServiceCollection services)

@@ -49,6 +49,7 @@ public class BlobStorageServiceTests
                 ConnectionString = "ConnectionString",
                 PomContainerName = "PomContainerName",
                 RegistrationContainerName = "RegistrationContainerName",
+                SubsidiaryContainerName = "subsidiaryContainerName"
             });
 
         _systemUnderTest = new BlobStorageService(
@@ -64,9 +65,11 @@ public class BlobStorageServiceTests
         const FileType fileType = FileType.Brands;
         const string csvFileMimeType = "text/csv";
         var submissionPeriod = It.IsAny<string>();
+        string fileName = "testfile.csv";
+        var organisationId = Guid.NewGuid();
 
         // Act
-        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod);
+        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod, fileName, organisationId);
 
         // Assert
         result.Should().Contain("fileTypeEPR", fileType.ToString());
@@ -78,6 +81,7 @@ public class BlobStorageServiceTests
     [TestMethod]
     [DataRow(SubmissionType.Producer)]
     [DataRow(SubmissionType.Registration)]
+    [DataRow(SubmissionType.Subsidiary)]
     public async Task UploadFileStreamWithMetadataAsync_WhenBlobIsCreated_NameIsReturned(SubmissionType submissionType)
     {
         // Arrange
@@ -97,6 +101,7 @@ public class BlobStorageServiceTests
     [TestMethod]
     [DataRow(SubmissionType.Producer)]
     [DataRow(SubmissionType.Registration)]
+    [DataRow(SubmissionType.Subsidiary)]
     public async Task UploadFileStreamWithMetadataAsync_WhenBlobCreationFails_ThrowsBlobStorageServiceException(SubmissionType submissionType)
     {
         // Arrange
