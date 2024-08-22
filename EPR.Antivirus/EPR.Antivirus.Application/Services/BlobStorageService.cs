@@ -92,25 +92,12 @@ public class BlobStorageService : IBlobStorageService
         }
     }
 
-    private string SetContainerName(SubmissionType submissionType)
+    private string SetContainerName(SubmissionType submissionType) => submissionType switch
     {
-        var blobContainerName = string.Empty;
-
-        switch (submissionType)
-        {
-            case SubmissionType.Producer:
-                blobContainerName = _options.PomContainerName;
-                break;
-            case SubmissionType.Registration:
-                blobContainerName = _options.RegistrationContainerName;
-                break;
-            case SubmissionType.Subsidiary:
-                blobContainerName = _options.SubsidiaryContainerName;
-                break;
-            default:
-                break;
-        }
-
-        return blobContainerName;
-    }
+        SubmissionType.Producer => _options.PomContainerName,
+        SubmissionType.Registration => _options.RegistrationContainerName,
+        SubmissionType.Subsidiary => _options.SubsidiaryContainerName,
+        SubmissionType.CompaniesHouse => _options.SubsidiaryCompaniesHouseContainerName,
+        _ => throw new InvalidOperationException()
+    };
 }

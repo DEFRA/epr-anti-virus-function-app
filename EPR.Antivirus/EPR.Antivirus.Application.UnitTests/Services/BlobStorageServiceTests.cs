@@ -49,7 +49,8 @@ public class BlobStorageServiceTests
                 ConnectionString = "ConnectionString",
                 PomContainerName = "PomContainerName",
                 RegistrationContainerName = "RegistrationContainerName",
-                SubsidiaryContainerName = "subsidiaryContainerName"
+                SubsidiaryContainerName = "SubsidiaryContainerName",
+                SubsidiaryCompaniesHouseContainerName = "SubsidiaryCompaniesHouseContainerName"
             });
 
         _systemUnderTest = new BlobStorageService(
