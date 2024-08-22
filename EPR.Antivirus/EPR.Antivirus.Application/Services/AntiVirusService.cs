@@ -50,12 +50,7 @@ public class AntivirusService : IAntivirusService
         SubmissionFileResult? submissionFile = await _submissionStatusApiClient.GetSubmissionFileAsync(fileId);
         var blobName = string.Empty;
         var errors = new List<string>();
-
-        bool? requiresRowValidation = null;
-        if (submissionFile.FileType != FileType.Pom && submissionFile.FileType != FileType.Subsidiaries)
-        {
-            requiresRowValidation = await _featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableRegistrationRowValidation));
-        }
+        var requiresRowValidation = await RowValidationRequired(submissionFile.FileType);
 
         try
         {
@@ -152,5 +147,23 @@ public class AntivirusService : IAntivirusService
                 transactionCode,
                 logMessage,
                 additionalInfo));
+    }
+
+    private async Task<bool?> RowValidationRequired(FileType fileType)
+    {
+        bool? requiresRowValidation = null;
+
+        switch (fileType)
+        {
+            case FileType.CompanyDetails:
+            case FileType.Brands:
+            case FileType.Partnerships:
+                requiresRowValidation = await _featureManager.IsEnabledAsync(nameof(FeatureFlags.EnableRegistrationRowValidation));
+                break;
+            default:
+                break;
+        }
+
+        return requiresRowValidation;
     }
 }

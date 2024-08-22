@@ -71,16 +71,6 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
         }
     }
 
-    private string SetContainerName(SubmissionType submissionType)
-        => submissionType switch
-        {
-            SubmissionType.Producer => _options.PomContainerName,
-            SubmissionType.Registration => _options.RegistrationContainerName,
-            SubmissionType.Subsidiary => _options.SubsidiaryContainerName,
-            SubmissionType.CompaniesHouse => _options.SubsidiaryCompaniesHouseContainerName,
-            _ => throw new InvalidOperationException()
-        };
-
     private string GetContainerName(FileType fileType) => fileType switch
     {
         FileType.Pom => _options.PomContainerName,
