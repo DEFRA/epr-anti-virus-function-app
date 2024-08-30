@@ -83,6 +83,7 @@ public class BlobStorageServiceTests
     [DataRow(SubmissionType.Producer)]
     [DataRow(SubmissionType.Registration)]
     [DataRow(SubmissionType.Subsidiary)]
+    [DataRow(SubmissionType.CompaniesHouse)]
     public async Task UploadFileStreamWithMetadataAsync_WhenBlobIsCreated_NameIsReturned(SubmissionType submissionType)
     {
         // Arrange
@@ -103,6 +104,7 @@ public class BlobStorageServiceTests
     [DataRow(SubmissionType.Producer)]
     [DataRow(SubmissionType.Registration)]
     [DataRow(SubmissionType.Subsidiary)]
+    [DataRow(SubmissionType.CompaniesHouse)]
     public async Task UploadFileStreamWithMetadataAsync_WhenBlobCreationFails_ThrowsBlobStorageServiceException(SubmissionType submissionType)
     {
         // Arrange
