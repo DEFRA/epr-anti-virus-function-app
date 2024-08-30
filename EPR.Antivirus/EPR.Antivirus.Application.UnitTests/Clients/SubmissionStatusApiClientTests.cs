@@ -19,6 +19,8 @@ public class SubmissionStatusApiClientTests
 {
     private const string PomContainerName = "pom-blob-container-name";
     private const string RegistrationContainerName = "registration-blob-container-name";
+    private const string SubsidiaryContainerName = "subsidiary-blob-container-name";
+    private const string CompaniesHouseContainerName = "companieshouse-blob-container-name";
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
     private readonly Mock<IOptions<BlobStorageOptions>> _blobStorageOptionsMock = new();
 
@@ -39,6 +41,8 @@ public class SubmissionStatusApiClientTests
         {
             PomContainerName = PomContainerName,
             RegistrationContainerName = RegistrationContainerName,
+            SubsidiaryContainerName = SubsidiaryContainerName,
+            SubsidiaryCompaniesHouseContainerName = CompaniesHouseContainerName
         });
 
         _systemUnderTest = new SubmissionStatusApiClient(
@@ -52,6 +56,8 @@ public class SubmissionStatusApiClientTests
     [DataRow(FileType.Brands, ScanResult.Success)]
     [DataRow(FileType.CompanyDetails, ScanResult.FailedToVirusScan)]
     [DataRow(FileType.Partnerships, ScanResult.Success)]
+    [DataRow(FileType.Subsidiaries, ScanResult.Success)]
+    [DataRow(FileType.CompaniesHouse, ScanResult.Success)]
     public async Task PostEventAsync_WhenValidRequest_NoErrorThrown(FileType fileType, ScanResult scanResult)
     {
         // Arrange
@@ -195,7 +201,21 @@ public class SubmissionStatusApiClientTests
             return false;
         }
 
-        return report.AntivirusScanResult == scanResult
-               && report.BlobContainerName == (fileType == FileType.Pom ? PomContainerName : RegistrationContainerName);
+        var expectedBlobContainer = RegistrationContainerName;
+
+        if (fileType == FileType.Pom)
+        {
+            expectedBlobContainer = PomContainerName;
+        }
+        else if (fileType == FileType.Subsidiaries)
+        {
+            expectedBlobContainer = SubsidiaryContainerName;
+        }
+        else if (fileType == FileType.CompaniesHouse)
+        {
+            expectedBlobContainer = CompaniesHouseContainerName;
+        }
+
+        return report.AntivirusScanResult == scanResult && report.BlobContainerName == expectedBlobContainer;
     }
 }

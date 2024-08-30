@@ -105,6 +105,7 @@ public class BlobStorageServiceTests
     [DataRow(SubmissionType.Registration)]
     [DataRow(SubmissionType.Subsidiary)]
     [DataRow(SubmissionType.CompaniesHouse)]
+    [DataRow(999)]
     public async Task UploadFileStreamWithMetadataAsync_WhenBlobCreationFails_ThrowsBlobStorageServiceException(SubmissionType submissionType)
     {
         // Arrange
