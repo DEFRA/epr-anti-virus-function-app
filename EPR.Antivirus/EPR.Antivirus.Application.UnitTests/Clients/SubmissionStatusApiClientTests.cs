@@ -201,20 +201,13 @@ public class SubmissionStatusApiClientTests
             return false;
         }
 
-        var expectedBlobContainer = RegistrationContainerName;
-
-        if (fileType == FileType.Pom)
+        var expectedBlobContainer = fileType switch
         {
-            expectedBlobContainer = PomContainerName;
-        }
-        else if (fileType == FileType.Subsidiaries)
-        {
-            expectedBlobContainer = SubsidiaryContainerName;
-        }
-        else if (fileType == FileType.CompaniesHouse)
-        {
-            expectedBlobContainer = CompaniesHouseContainerName;
-        }
+            FileType.Pom => PomContainerName,
+            FileType.Subsidiaries => SubsidiaryContainerName,
+            FileType.CompaniesHouse => CompaniesHouseContainerName,
+            _ => RegistrationContainerName
+        };
 
         return report.AntivirusScanResult == scanResult && report.BlobContainerName == expectedBlobContainer;
     }
