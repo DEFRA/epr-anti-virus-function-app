@@ -3,4 +3,4 @@ variables:
   docker.imageName: 'antivirusresult'
   acr.azureContainerRegistryName: 'devrwdinfac1401'
   acr.repositoryName: 'antivirusrepository'
-  serviceName: 'devrwdwebfa9405'
+  serviceName: 'devrwdwebfa94mic05'
