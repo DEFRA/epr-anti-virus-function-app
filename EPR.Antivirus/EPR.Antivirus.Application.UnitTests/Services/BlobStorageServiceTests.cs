@@ -58,12 +58,15 @@ public class BlobStorageServiceTests
     }
 
     [TestMethod]
-    public void CreateMetadata_WhenCalled_ReturnsDataInMetadataFormat()
+    [DataRow(FileType.Pom)]
+    [DataRow(FileType.CompanyDetails)]
+    [DataRow(FileType.Brands)]
+    [DataRow(FileType.Partnerships)]
+    public void CreateMetadata_WhenCalled_ReturnsDataInMetadataFormat(FileType fileType)
     {
         // Arrange
         var submissionId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        const FileType fileType = FileType.Brands;
         const string csvFileMimeType = "text/csv";
         var submissionPeriod = It.IsAny<string>();
         string fileName = "testfile.csv";
@@ -77,6 +80,32 @@ public class BlobStorageServiceTests
         result.Should().Contain("submissionId", submissionId.ToString());
         result.Should().Contain("userId", userId.ToString());
         result.Should().Contain("fileType", csvFileMimeType);
+        result.Should().Contain("submissionPeriod", submissionPeriod);
+    }
+
+    [TestMethod]
+    [DataRow(FileType.Subsidiaries)]
+    [DataRow(FileType.CompaniesHouse)]
+    public void CreateMetadata_WhenCalled_ReturnsCorrectMetadata_ForSubsidiariesAndCompaniesHouse(FileType fileType)
+    {
+        // Arrange
+        var submissionId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        const string csvFileMimeType = "text/csv";
+        var submissionPeriod = "NA";
+        string fileName = "testfile.csv";
+        var organisationId = Guid.NewGuid();
+
+        // Act
+        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod, fileName, organisationId);
+
+        // Assert
+        result.Should().Contain("fileTypeEPR", fileType.ToString());
+        result.Should().Contain("submissionId", submissionId.ToString());
+        result.Should().Contain("userId", userId.ToString());
+        result.Should().Contain("fileType", csvFileMimeType);
+        result.Should().Contain("fileName", fileName);
+        result.Should().Contain("organisationId", organisationId.ToString());
     }
 
     [TestMethod]
