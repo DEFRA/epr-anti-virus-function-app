@@ -52,52 +52,6 @@ public class BlobStorageService : IBlobStorageService
         }
 
         return metaData;
-
-        /*
-        if (fileType == FileType.Subsidiaries)
-        {
-            return new Dictionary<string, string>
-            {
-                {
-                    "fileTypeEPR", fileType.ToString()
-                },
-                {
-                    "submissionId", submissionId.ToString()
-                },
-                {
-                    "userId", userId.ToString()
-                },
-                {
-                    "fileType", "text/csv"
-                },
-                {
-                    "fileName", fileName
-                },
-                {
-                    "organisationId", organisationId.ToString()
-                }
-            };
-        }
-
-        return new Dictionary<string, string>
-        {
-            {
-                "fileTypeEPR", fileType.ToString()
-            },
-            {
-                "submissionId", submissionId.ToString()
-            },
-            {
-                "userId", userId.ToString()
-            },
-            {
-                "fileType", "text/csv"
-            },
-            {
-                "submissionPeriod", submissionPeriod
-            }
-        };
-        */
     }
 
     public async Task<string> UploadFileStreamWithMetadataAsync(
