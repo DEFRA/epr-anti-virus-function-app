@@ -122,10 +122,6 @@ public class AntivirusService : IAntivirusService
 
             await _serviceBusQueueClient.SendMessageAsync(processFileAsyncRequest.SubmissionType, serviceBusQueueMessage);
         }
-        else
-        {
-            Console.WriteLine("TODO:");
-        }
 
         return blobName;
     }
