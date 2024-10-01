@@ -15,6 +15,7 @@ public class FileTypeExtensionsTests
     [DataRow(FileType.Brands, SubmissionSubType.Brands)]
     [DataRow(FileType.Partnerships, SubmissionSubType.Partnerships)]
     [DataRow(FileType.Subsidiaries, null)]
+    [DataRow(FileType.CompaniesHouse, null)]
     public void ToSubmissionSubType_ReturnsCorrectMapping(FileType fileType, SubmissionSubType? submissionSubType)
     {
         // Arrange

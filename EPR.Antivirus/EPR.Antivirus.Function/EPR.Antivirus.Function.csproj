@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AzureFunctionsVersion>V4</AzureFunctionsVersion>
+        <AzureFunctionsVersion>v4</AzureFunctionsVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
