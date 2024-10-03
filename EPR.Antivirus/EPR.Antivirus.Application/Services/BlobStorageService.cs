@@ -23,32 +23,7 @@ public class BlobStorageService : IBlobStorageService
 
     public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod, string fileName, Guid organisationId)
     {
-        if (fileType == FileType.Subsidiaries)
-        {
-            return new Dictionary<string, string>
-            {
-                {
-                    "fileTypeEPR", fileType.ToString()
-                },
-                {
-                    "submissionId", submissionId.ToString()
-                },
-                {
-                    "userId", userId.ToString()
-                },
-                {
-                    "fileType", "text/csv"
-                },
-                {
-                    "fileName", fileName
-                },
-                {
-                    "organisationId", organisationId.ToString()
-                }
-            };
-        }
-
-        return new Dictionary<string, string>
+        var metaData = new Dictionary<string, string>
         {
             {
                 "fileTypeEPR", fileType.ToString()
@@ -61,11 +36,22 @@ public class BlobStorageService : IBlobStorageService
             },
             {
                 "fileType", "text/csv"
-            },
-            {
-                "submissionPeriod", submissionPeriod
             }
         };
+
+        switch (fileType)
+        {
+            case FileType.Subsidiaries:
+            case FileType.CompaniesHouse:
+                metaData.Add("fileName", fileName);
+                metaData.Add("organisationId", organisationId.ToString());
+                break;
+            default:
+                metaData.Add("submissionPeriod", submissionPeriod);
+                break;
+        }
+
+        return metaData;
     }
 
     public async Task<string> UploadFileStreamWithMetadataAsync(
@@ -92,25 +78,12 @@ public class BlobStorageService : IBlobStorageService
         }
     }
 
-    private string SetContainerName(SubmissionType submissionType)
+    private string SetContainerName(SubmissionType submissionType) => submissionType switch
     {
-        var blobContainerName = string.Empty;
-
-        switch (submissionType)
-        {
-            case SubmissionType.Producer:
-                blobContainerName = _options.PomContainerName;
-                break;
-            case SubmissionType.Registration:
-                blobContainerName = _options.RegistrationContainerName;
-                break;
-            case SubmissionType.Subsidiary:
-                blobContainerName = _options.SubsidiaryContainerName;
-                break;
-            default:
-                break;
-        }
-
-        return blobContainerName;
-    }
+        SubmissionType.Producer => _options.PomContainerName,
+        SubmissionType.Registration => _options.RegistrationContainerName,
+        SubmissionType.Subsidiary => _options.SubsidiaryContainerName,
+        SubmissionType.CompaniesHouse => _options.SubsidiaryCompaniesHouseContainerName,
+        _ => throw new InvalidOperationException()
+    };
 }

@@ -41,7 +41,9 @@ public class ServiceBusQueueClientTests
     }
 
     [TestMethod]
-    public async Task PostMessageAsync_WhenValid_CreateSenderIsCalled()
+    [DataRow(SubmissionType.Producer)]
+    [DataRow(SubmissionType.Registration)]
+    public async Task PostMessageAsync_WhenValid_CreateSenderIsCalled(SubmissionType submissionType)
     {
         // Arrange
         var blobName = Guid.NewGuid().ToString();
@@ -56,7 +58,7 @@ public class ServiceBusQueueClientTests
             false);
 
         // Act
-        _systemUnderTest.SendMessageAsync(It.IsAny<SubmissionType>(), message);
+        _systemUnderTest.SendMessageAsync(submissionType, message);
 
         // Assert
         _serviceBusClientMock.Verify(x => x.CreateSender(It.IsAny<string>()), Times.Once);

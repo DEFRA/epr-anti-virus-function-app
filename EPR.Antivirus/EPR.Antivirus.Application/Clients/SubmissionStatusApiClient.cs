@@ -71,23 +71,11 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
         }
     }
 
-    private string GetContainerName(FileType fileType)
+    private string GetContainerName(FileType fileType) => fileType switch
     {
-        var blobContainerName = string.Empty;
-
-        switch (fileType)
-        {
-            case FileType.Pom:
-                blobContainerName = _options.PomContainerName;
-                break;
-            case FileType.Subsidiaries:
-                blobContainerName = _options.SubsidiaryContainerName;
-                break;
-            default:
-                blobContainerName = _options.RegistrationContainerName;
-                break;
-        }
-
-        return blobContainerName;
-    }
+        FileType.Pom => _options.PomContainerName,
+        FileType.Subsidiaries => _options.SubsidiaryContainerName,
+        FileType.CompaniesHouse => _options.SubsidiaryCompaniesHouseContainerName,
+        _ => _options.RegistrationContainerName
+    };
 }
