@@ -1,0 +1,6 @@
+variables:
+  azureSubscription: 'AZD-RWD-DEV14'
+  docker.imageName: 'antivirusresult'
+  acr.azureContainerRegistryName: 'devrwdinfac1401'
+  acr.repositoryName: 'antivirusrepository'
+  serviceName: 'DEVRWDWEBFAE405'
