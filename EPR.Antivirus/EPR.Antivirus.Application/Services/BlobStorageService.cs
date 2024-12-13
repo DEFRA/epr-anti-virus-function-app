@@ -21,7 +21,7 @@ public class BlobStorageService : IBlobStorageService
         _logger = logger;
     }
 
-    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod, string fileName, Guid organisationId)
+    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod, string fileName, Guid organisationId, Guid? complianceSchemeId = null)
     {
         var metaData = new Dictionary<string, string>
         {
@@ -45,6 +45,11 @@ public class BlobStorageService : IBlobStorageService
             case FileType.CompaniesHouse:
                 metaData.Add("fileName", fileName);
                 metaData.Add("organisationId", organisationId.ToString());
+                if (complianceSchemeId is not null)
+                {
+                    metaData.Add("complianceSchemeId", complianceSchemeId.ToString());
+                }
+
                 break;
             default:
                 metaData.Add("submissionPeriod", submissionPeriod);
