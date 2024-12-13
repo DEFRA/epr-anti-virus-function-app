@@ -45,15 +45,15 @@ public class BlobStorageService : IBlobStorageService
             case FileType.CompaniesHouse:
                 metaData.Add("fileName", fileName);
                 metaData.Add("organisationId", organisationId.ToString());
-                if (complianceSchemeId is not null)
-                {
-                    metaData.Add("complianceSchemeId", complianceSchemeId.ToString());
-                }
-
                 break;
             default:
                 metaData.Add("submissionPeriod", submissionPeriod);
                 break;
+        }
+
+        if (fileType is FileType.Subsidiaries && complianceSchemeId is not null)
+        {
+            metaData.Add("complianceSchemeId", complianceSchemeId.ToString());
         }
 
         return metaData;
