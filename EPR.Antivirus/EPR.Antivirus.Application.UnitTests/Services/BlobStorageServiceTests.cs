@@ -69,7 +69,7 @@ public class BlobStorageServiceTests
         var userId = Guid.NewGuid();
         const string csvFileMimeType = "text/csv";
         var submissionPeriod = It.IsAny<string>();
-        string fileName = "testfile.csv";
+        string fileName = "testFile.csv";
         var organisationId = Guid.NewGuid();
 
         // Act
@@ -81,6 +81,7 @@ public class BlobStorageServiceTests
         result.Should().Contain("userId", userId.ToString());
         result.Should().Contain("fileType", csvFileMimeType);
         result.Should().Contain("submissionPeriod", submissionPeriod);
+        result.Should().NotContainKey("complianceSchemeId");
     }
 
     [TestMethod]
@@ -93,7 +94,7 @@ public class BlobStorageServiceTests
         var userId = Guid.NewGuid();
         const string csvFileMimeType = "text/csv";
         var submissionPeriod = "NA";
-        string fileName = "testfile.csv";
+        string fileName = "testFile.csv";
         var organisationId = Guid.NewGuid();
 
         // Act
@@ -106,6 +107,33 @@ public class BlobStorageServiceTests
         result.Should().Contain("fileType", csvFileMimeType);
         result.Should().Contain("fileName", fileName);
         result.Should().Contain("organisationId", organisationId.ToString());
+        result.Should().NotContainKey("complianceSchemeId");
+    }
+
+    [TestMethod]
+    public void CreateMetadata_WhenCalled_ReturnsCorrectMetadata_ForSubsidiariesAndCompaniesHouse_With_ComplianceSchemeId()
+    {
+        // Arrange
+        var fileType = FileType.Subsidiaries;
+        var submissionId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        const string csvFileMimeType = "text/csv";
+        var submissionPeriod = "NA";
+        string fileName = "testFile.csv";
+        var organisationId = Guid.NewGuid();
+        var complianceSchemeId = Guid.NewGuid();
+
+        // Act
+        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod, fileName, organisationId, complianceSchemeId);
+
+        // Assert
+        result.Should().Contain("fileTypeEPR", fileType.ToString());
+        result.Should().Contain("submissionId", submissionId.ToString());
+        result.Should().Contain("userId", userId.ToString());
+        result.Should().Contain("fileType", csvFileMimeType);
+        result.Should().Contain("fileName", fileName);
+        result.Should().Contain("organisationId", organisationId.ToString());
+        result.Should().Contain("complianceSchemeId", complianceSchemeId.ToString());
     }
 
     [TestMethod]
