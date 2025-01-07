@@ -103,7 +103,8 @@ public class AntivirusService : IAntivirusService
             processFileAsyncRequest.FileType,
             processFileAsyncRequest.SubmissionPeriod,
             processFileAsyncRequest.FileName,
-            processFileAsyncRequest.OrganisationId);
+            processFileAsyncRequest.OrganisationId,
+            processFileAsyncRequest.ComplianceSchemeId);
         var blobName = await _blobStorageService.UploadFileStreamWithMetadataAsync(
             fileStream, processFileAsyncRequest.SubmissionType, fileMetadata);
 
