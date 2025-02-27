@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AzureFunctionsVersion>v4</AzureFunctionsVersion>
         <Nullable>enable</Nullable>
+        <UserSecretsId>72d421a4-e620-4276-a53d-33b248ee907c</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.21.1" />
