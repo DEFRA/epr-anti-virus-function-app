@@ -20,4 +20,6 @@ public class BlobStorageOptions
     public string SubsidiaryContainerName { get; set; }
 
     public string SubsidiaryCompaniesHouseContainerName { get; set; }
+
+    public string AccreditationContainerName { get; set; }
 }

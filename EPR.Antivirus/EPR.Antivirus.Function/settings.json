@@ -14,7 +14,8 @@
     "BlobStorage": {
       "ConnectionString": "",
       "PomContainerName": "",
-      "RegistrationContainerName": ""
+      "RegistrationContainerName": "",
+      "AccreditationContainerName": ""
     },
     "TradeAntivirusApi": {
       "BaseUrl": "",

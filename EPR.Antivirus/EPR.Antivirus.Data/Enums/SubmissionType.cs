@@ -5,5 +5,8 @@ public enum SubmissionType
     Producer = 1,
     Registration = 2,
     Subsidiary = 3,
-    CompaniesHouse = 4
+    CompaniesHouse = 4,
+    RegistrationFeePayment = 5,
+    RegistrationApplicationSubmitted = 6,
+    Accreditation = 7,
 }

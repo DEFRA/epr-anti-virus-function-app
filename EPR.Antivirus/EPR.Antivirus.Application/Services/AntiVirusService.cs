@@ -108,7 +108,8 @@ public class AntivirusService : IAntivirusService
         var blobName = await _blobStorageService.UploadFileStreamWithMetadataAsync(
             fileStream, processFileAsyncRequest.SubmissionType, fileMetadata);
 
-        if (processFileAsyncRequest.SubmissionType != SubmissionType.Subsidiary)
+        if (processFileAsyncRequest.SubmissionType != SubmissionType.Subsidiary &&
+            processFileAsyncRequest.SubmissionType != SubmissionType.Accreditation)
         {
             var submissionSubType = processFileAsyncRequest.FileType.ToSubmissionSubType();
             var serviceBusQueueMessage = new ServiceBusQueueMessage(

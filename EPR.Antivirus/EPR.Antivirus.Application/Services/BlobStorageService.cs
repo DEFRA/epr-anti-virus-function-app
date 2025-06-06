@@ -43,6 +43,7 @@ public class BlobStorageService : IBlobStorageService
         {
             case FileType.Subsidiaries:
             case FileType.CompaniesHouse:
+            case FileType.Accreditation:
                 metaData.Add("fileName", fileName);
                 metaData.Add("organisationId", organisationId.ToString());
                 break;
@@ -89,6 +90,7 @@ public class BlobStorageService : IBlobStorageService
         SubmissionType.Registration => _options.RegistrationContainerName,
         SubmissionType.Subsidiary => _options.SubsidiaryContainerName,
         SubmissionType.CompaniesHouse => _options.SubsidiaryCompaniesHouseContainerName,
+        SubmissionType.Accreditation => _options.AccreditationContainerName,
         _ => throw new InvalidOperationException()
     };
 }

@@ -76,6 +76,7 @@ public class SubmissionStatusApiClient : ISubmissionStatusApiClient
         FileType.Pom => _options.PomContainerName,
         FileType.Subsidiaries => _options.SubsidiaryContainerName,
         FileType.CompaniesHouse => _options.SubsidiaryCompaniesHouseContainerName,
+        FileType.Accreditation => _options.AccreditationContainerName,
         _ => _options.RegistrationContainerName
     };
 }
