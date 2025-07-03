@@ -219,6 +219,8 @@ public class AntivirusServiceTests
     [DataRow(SubmissionType.Subsidiary, FileType.Subsidiaries, false, null)]
     [DataRow(SubmissionType.Subsidiary, FileType.CompaniesHouse, true, null)]
     [DataRow(SubmissionType.Subsidiary, FileType.CompaniesHouse, false, null)]
+    [DataRow(SubmissionType.Accreditation, FileType.Accreditation, true, null)]
+    [DataRow(SubmissionType.Accreditation, FileType.Accreditation, false, null)]
     public async Task HandleAsync_CorrectlySetsRequiresRowValidation_ForValidFileTypeAndFeatureFlag(SubmissionType submissionType, FileType fileType, bool featureFlag, bool? requiresRowValidation)
     {
         // Arrange
