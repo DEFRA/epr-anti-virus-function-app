@@ -5,6 +5,7 @@ using Data.Enums;
 using Data.Options;
 using Exceptions;
 using Interfaces;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,15 +15,31 @@ public class BlobStorageService : IBlobStorageService
     private readonly BlobStorageOptions _options;
     private readonly ILogger<BlobStorageService> _logger;
 
-    public BlobStorageService(BlobServiceClient blobServiceClient, IOptions<BlobStorageOptions> options, ILogger<BlobStorageService> logger)
+    public BlobStorageService(
+        BlobServiceClient blobServiceClient,
+        IOptions<BlobStorageOptions> options,
+        ILogger<BlobStorageService> logger)
     {
         _blobServiceClient = blobServiceClient;
         _options = options.Value;
         _logger = logger;
     }
 
-    public static Dictionary<string, string> CreateMetadata(Guid submissionId, Guid userId, FileType fileType, string submissionPeriod, string fileName, Guid organisationId, Guid? complianceSchemeId = null)
+    public static Dictionary<string, string> CreateMetadata(
+        Guid submissionId,
+        Guid userId,
+        FileType fileType,
+        string submissionPeriod,
+        string fileName,
+        Guid organisationId,
+        Guid? complianceSchemeId = null)
     {
+        var contentType = fileType switch
+        {
+            FileType.Accreditation => GetContentType(fileName),
+            _ => "text/csv"
+        };
+
         var metaData = new Dictionary<string, string>
         {
             {
@@ -35,7 +52,7 @@ public class BlobStorageService : IBlobStorageService
                 "userId", userId.ToString()
             },
             {
-                "fileType", "text/csv"
+                "fileType", contentType
             }
         };
 
@@ -43,6 +60,7 @@ public class BlobStorageService : IBlobStorageService
         {
             case FileType.Subsidiaries:
             case FileType.CompaniesHouse:
+            case FileType.Accreditation:
                 metaData.Add("fileName", fileName);
                 metaData.Add("organisationId", organisationId.ToString());
                 break;
@@ -67,7 +85,6 @@ public class BlobStorageService : IBlobStorageService
         try
         {
             var containerName = SetContainerName(submissionType);
-
             var blobContainerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             var blob = blobContainerClient.GetBlobClient(Guid.NewGuid().ToString());
             await blob.UploadAsync(stream);
@@ -83,12 +100,25 @@ public class BlobStorageService : IBlobStorageService
         }
     }
 
+    private static string GetContentType(string fileName)
+    {
+        var provider = new FileExtensionContentTypeProvider();
+
+        if (!provider.TryGetContentType(fileName, out string contentType))
+        {
+            contentType = "application/octet-stream";
+        }
+
+        return contentType;
+    }
+
     private string SetContainerName(SubmissionType submissionType) => submissionType switch
     {
         SubmissionType.Producer => _options.PomContainerName,
         SubmissionType.Registration => _options.RegistrationContainerName,
         SubmissionType.Subsidiary => _options.SubsidiaryContainerName,
         SubmissionType.CompaniesHouse => _options.SubsidiaryCompaniesHouseContainerName,
+        SubmissionType.Accreditation => _options.AccreditationContainerName,
         _ => throw new InvalidOperationException()
     };
 }

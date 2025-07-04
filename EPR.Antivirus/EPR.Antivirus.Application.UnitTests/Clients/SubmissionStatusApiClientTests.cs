@@ -21,6 +21,7 @@ public class SubmissionStatusApiClientTests
     private const string RegistrationContainerName = "registration-blob-container-name";
     private const string SubsidiaryContainerName = "subsidiary-blob-container-name";
     private const string CompaniesHouseContainerName = "companieshouse-blob-container-name";
+    private const string AccreditationContainerName = "accreditation-blob-container-name";
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
     private readonly Mock<IOptions<BlobStorageOptions>> _blobStorageOptionsMock = new();
 
@@ -42,7 +43,8 @@ public class SubmissionStatusApiClientTests
             PomContainerName = PomContainerName,
             RegistrationContainerName = RegistrationContainerName,
             SubsidiaryContainerName = SubsidiaryContainerName,
-            SubsidiaryCompaniesHouseContainerName = CompaniesHouseContainerName
+            SubsidiaryCompaniesHouseContainerName = CompaniesHouseContainerName,
+            AccreditationContainerName = AccreditationContainerName,
         });
 
         _systemUnderTest = new SubmissionStatusApiClient(
@@ -58,6 +60,7 @@ public class SubmissionStatusApiClientTests
     [DataRow(FileType.Partnerships, ScanResult.Success)]
     [DataRow(FileType.Subsidiaries, ScanResult.Success)]
     [DataRow(FileType.CompaniesHouse, ScanResult.Success)]
+    [DataRow(FileType.Accreditation, ScanResult.Success)]
     public async Task PostEventAsync_WhenValidRequest_NoErrorThrown(FileType fileType, ScanResult scanResult)
     {
         // Arrange
@@ -206,6 +209,7 @@ public class SubmissionStatusApiClientTests
             FileType.Pom => PomContainerName,
             FileType.Subsidiaries => SubsidiaryContainerName,
             FileType.CompaniesHouse => CompaniesHouseContainerName,
+            FileType.Accreditation => AccreditationContainerName,
             _ => RegistrationContainerName
         };
 

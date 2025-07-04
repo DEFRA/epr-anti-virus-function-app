@@ -50,7 +50,8 @@ public class BlobStorageServiceTests
                 PomContainerName = "PomContainerName",
                 RegistrationContainerName = "RegistrationContainerName",
                 SubsidiaryContainerName = "SubsidiaryContainerName",
-                SubsidiaryCompaniesHouseContainerName = "SubsidiaryCompaniesHouseContainerName"
+                SubsidiaryCompaniesHouseContainerName = "SubsidiaryCompaniesHouseContainerName",
+                AccreditationContainerName = "AccreditationContainerName",
             });
 
         _systemUnderTest = new BlobStorageService(
@@ -141,6 +142,7 @@ public class BlobStorageServiceTests
     [DataRow(SubmissionType.Registration)]
     [DataRow(SubmissionType.Subsidiary)]
     [DataRow(SubmissionType.CompaniesHouse)]
+    [DataRow(SubmissionType.Accreditation)]
     public async Task UploadFileStreamWithMetadataAsync_WhenBlobIsCreated_NameIsReturned(SubmissionType submissionType)
     {
         // Arrange
@@ -162,6 +164,7 @@ public class BlobStorageServiceTests
     [DataRow(SubmissionType.Registration)]
     [DataRow(SubmissionType.Subsidiary)]
     [DataRow(SubmissionType.CompaniesHouse)]
+    [DataRow(SubmissionType.Accreditation)]
     [DataRow(999)]
     public async Task UploadFileStreamWithMetadataAsync_WhenBlobCreationFails_ThrowsBlobStorageServiceException(SubmissionType submissionType)
     {
@@ -177,5 +180,31 @@ public class BlobStorageServiceTests
             .Should()
             .ThrowAsync<BlobStorageServiceException>()
             .WithMessage("Error occurred during uploading to blob storage");
+    }
+
+    [TestMethod]
+    public void CreateMetadata_WhenCalled_ReturnsCorrectMetadata_ForAccreditation()
+    {
+        // Arrange
+        var fileType = FileType.Accreditation;
+        var submissionId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        const string csvFileMimeType = "text/csv";
+        var submissionPeriod = "NA";
+        string fileName = "testFile.csv";
+        var organisationId = Guid.NewGuid();
+
+        // Act
+        var result = BlobStorageService.CreateMetadata(submissionId, userId, fileType, submissionPeriod, fileName, organisationId);
+
+        // Assert
+        result.Should().Contain("fileTypeEPR", fileType.ToString());
+        result.Should().Contain("submissionId", submissionId.ToString());
+        result.Should().Contain("userId", userId.ToString());
+        result.Should().Contain("fileType", csvFileMimeType);
+        result.Should().Contain("fileName", fileName);
+        result.Should().Contain("organisationId", organisationId.ToString());
+        result.Should().NotContainKey("complianceSchemeId");
+        result.Should().NotContainKey("submissionPeriod");
     }
 }

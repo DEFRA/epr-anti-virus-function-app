@@ -15,6 +15,7 @@ public static class FileTypeExtensions
             FileType.Pom => null,
             FileType.Subsidiaries => null,
             FileType.CompaniesHouse => null,
+            FileType.Accreditation => null,
             _ => throw new InvalidEnumArgumentException(),
         };
     }
