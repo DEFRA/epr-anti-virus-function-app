@@ -114,6 +114,8 @@ The structure of the appsettings can be found in the repository. Example configu
 
 See [ADR-023: Anti-Virus Service](https://eaflood.atlassian.net/wiki/spaces/MWR/pages/4318167185/ADR-023+Anti-Virus+Service)
 
+See [DEFRA Trade Anti Virus API - secret renewal](https://eaflood.atlassian.net/wiki/spaces/EDIA/pages/6447759417/DEFRA+Trade+Anti+Virus+API+-+secret+renewal)
+
  
 ### Monitoring and Health Check 
 
