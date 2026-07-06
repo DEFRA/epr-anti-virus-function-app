@@ -1,11 +1,11 @@
-﻿namespace EPR.Antivirus.Function;
+namespace EPR.Antivirus.Function;
 
 using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Extensions;
 using Application.Services.Interfaces;
 using Data.DTOs.TradeAntivirusQueue;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 public class ServiceBusQueueTrigger
@@ -19,7 +19,7 @@ public class ServiceBusQueueTrigger
         _logger = logger;
     }
 
-    [FunctionName("ServiceBusQueueTrigger")]
+    [Function("ServiceBusQueueTrigger")]
     public async Task RunAsync(
         [ServiceBusTrigger(
             "%TradeAntivirusServiceBus:AntivirusTopicName%",
