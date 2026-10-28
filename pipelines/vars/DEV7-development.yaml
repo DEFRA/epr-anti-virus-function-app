@@ -1,6 +1,12 @@
 variables:
-  azureSubscription: 'AZD-RWD-DEV7'
-  docker.imageName: 'antivirusresult'
-  acr.azureContainerRegistryName: 'devrwdinfac1401'
-  acr.repositoryName: 'antivirusrepository'
-  serviceName: 'devrwdwebfa7405'
+- group: ServiceConnections
+- name: azureSubscription
+  value: $(ServiceConnectionDEV7)
+- name: docker.imageName
+  value: 'antivirusresult'
+- name: acr.azureContainerRegistryName
+  value: 'devrwdinfac1401'
+- name: acr.repositoryName
+  value: 'antivirusrepository'
+- name: serviceName
+  value: 'devrwdwebfa7405'

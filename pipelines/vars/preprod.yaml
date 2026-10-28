@@ -1,6 +1,12 @@
 variables:
-  azureSubscription: 'AZR-RWD-PRE1'
-  docker.imageName: 'antivirusresult'
-  acr.azureContainerRegistryName: 'prerwdinfac1401'
-  acr.repositoryName: 'antivirusrepository'
-  serviceName: 'prerwdwebfa1405'
+- group: ServiceConnections
+- name: azureSubscription
+  value: $(ServiceConnectionPRE1)
+- name: docker.imageName
+  value: 'antivirusresult'
+- name: acr.azureContainerRegistryName
+  value: 'prerwdinfac1401'
+- name: acr.repositoryName
+  value: 'antivirusrepository'
+- name: serviceName
+  value: 'prerwdwebfa1405'
